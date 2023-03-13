@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon --legacy-watch --exec ts-node src/index.ts",
-    "dev:docker": "nodemon --legacy-watch --exec ts-node index.ts",
+    "dev:docker": "nodemon --legacy-watch --exec ts-node src/index.ts",
     "start": "node dist/index.js",
     "build": "tsc",
     "postinstall": "npx prisma generate"

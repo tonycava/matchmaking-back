@@ -1,10 +1,15 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import authRouter from './auth/auth.router';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+
+app.use('/auth', authRouter);
 
 app.get('/', (req, res) => {
 	res.send('Hello World! chang');
