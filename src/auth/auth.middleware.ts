@@ -8,8 +8,8 @@ export const checkIfEmailIsAvailable = async (
 	res: ALMMatcherResponse,
 	next: NextFunction,
 ): Promise<void> => {
-	const { email } = req.body;
-	const user = await getUserByEmail(email);
+	const { username } = req.body;
+	const user = await getUserByEmail(username);
 	if (user) return next(new ALMMatcherResult("Email already taken",400));
 	return next();
 };

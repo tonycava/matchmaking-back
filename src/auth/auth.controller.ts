@@ -12,11 +12,11 @@ export const register = async (
 	next: NextFunction,
 ) => {
 	try {
-		const createdUser = await createUser(req.body);
-		const token = jwt.sign({ userId: createdUser.id }, process.env.JWT_SECRET ?? '', {
+		const { username, id, createdAt } = await createUser(req.body);
+		const token = jwt.sign({ id, username, createdAt  }, process.env.JWT_SECRET ?? '', {
 			expiresIn: '7d',
 		});
-		return res.status(201).json(new ALMMatcherResult('User created', 201, { createdUser, token }));
+		return res.status(201).json(new ALMMatcherResult('User created', 201, { ...{ id, username, createdAt  }, token }));
 	} catch (error) {
 		return res.status(201).json(new ALMMatcherResult('Something went wrong', 400));
 	}
