@@ -2,31 +2,31 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import http from 'http';
+import { Server } from 'socket.io';
 
 import authRouter from './auth/auth.router';
 
 import { errorHandlerMiddleware } from './common/error.middleware';
+import { CORS_CONFIG } from './lib/utils';
 
 dotenv.config();
 
+const PORT = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
+export const io = new Server(server, { cors: CORS_CONFIG });
 
-const PORT = process.env.PORT || 3000;
+import './gateway/gateway.controller';
 
 app.use(express.json());
-app.use(cors());
+app.use(cors(CORS_CONFIG));
 
 app.use('/auth', authRouter);
 
-
-
-app.get('/', (req, res) => {
-	res.send('Hello World! chang');
-});
+app.get('/', (req, res) => res.send('Hello World!'));
 
 app.use(errorHandlerMiddleware);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
 	console.log(`Server is running on port http://localhost:${PORT}`);
 });
