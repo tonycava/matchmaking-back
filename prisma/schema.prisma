@@ -16,4 +16,15 @@ model User {
   hashedPassword String
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+  winnerGames    Game[]    @relation("winner")
+  loserGames     Game[]    @relation("loser")
+}
+
+model Game {
+  id        String   @id
+  createdAt DateTime @default(now())
+  winner    User?    @relation("winner", fields: [winnerId], references: [id])
+  winnerId  String?
+  loser     User?    @relation("loser", fields: [loserId], references: [id])
+  loserId   String?
 }

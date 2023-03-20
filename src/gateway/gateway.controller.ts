@@ -1,12 +1,22 @@
 import { io } from '../index';
 import crypto from 'crypto';
+import { createGame } from './gateway.service';
+import { Game, Move, Waiter } from './dto';
+import { buildNewGame } from './game.logic';
 
-type Waiter = {
-	userId: string;
-	joinAt: Date;
-}
 
 let waiters: Waiter[] = [];
+const games: Map<string, Game> = new Map([]);
+
+// setInterval(() => {
+// 	for (const [gameId, game] of games) {
+// 		const newGame = buildNewGame(game);
+// 		games.set(gameId, newGame);
+// 		io
+// 			.to(gameId)
+// 			.emit('update', newGame);
+// 	}
+// }, 1000);
 
 io.on('connection', (socket) => {
 	console.log('a user connected');
@@ -15,15 +25,45 @@ io.on('connection', (socket) => {
 		waiters = waiters.filter((waiter) => waiter.userId !== data.userId);
 	});
 
-	socket.on('joinWaiting', (data: Waiter) => {
+	socket.on('joinGame', (gameId) => {
+		socket.join(gameId);
+	});
+
+	socket.on('play', (data: { gameId: string; userId: string; move: Move }) => {
+		const game = games.get(data.gameId)!;
+		game.actualPlay[data.userId] = data.move;
+		games.set(data.gameId, game);
+	});
+
+	socket.on('joinWaiting', async (data: Waiter) => {
 		socket.join(data.userId);
-		console.log('join at', data.userId);
 
 		if (waiters.length >= 1) {
 			const partner = waiters.shift()!;
-			io
-				.to([data.userId, partner.userId])
-				.emit('partner', { users: [partner, data], gameId: crypto.randomUUID() });
+			// if (waiters.includes({ userId: partner.userId })) return
+			// if (partner.userId === data.userId) return;
+			const gameId = crypto.randomUUID();
+			try {
+				await createGame(gameId);
+				games.set(gameId, {
+					state: 'choosing',
+					whoWin: [null, null, null],
+					round: 1,
+					actualPlay: {
+						[partner.userId]: 'rock',
+						[data.userId]: 'scissors',
+					},
+					timerPlay: 10,
+					timerRev: 5,
+					players: [partner.userId, data.userId],
+				});
+				io
+					.to([data.userId, partner.userId])
+					.emit('partner', { users: [partner, data], gameId });
+			} catch (error) {
+				console.log(error);
+			}
+
 			return;
 		}
 		waiters.push(data);
