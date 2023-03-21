@@ -4,7 +4,6 @@ import { createGame } from './gateway.service';
 import { Game, Move, Waiter } from './dto';
 import { buildNewGame } from './game.logic';
 
-
 let waiters: Waiter[] = [];
 const games: Map<string, Game> = new Map([]);
 
@@ -57,9 +56,7 @@ io.on('connection', (socket) => {
 					timerRev: 5,
 					players: [partner.userId, data.userId],
 				});
-				io
-					.to([data.userId, partner.userId])
-					.emit('partner', { users: [partner, data], gameId });
+				io.to([data.userId, partner.userId]).emit('partner', { users: [partner, data], gameId });
 			} catch (error) {
 				console.log(error);
 			}

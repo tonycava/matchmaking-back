@@ -9,8 +9,7 @@ import bcrypt from 'bcrypt';
 export const register = async (
 	req: ALMMatcherRequest<AuthDTO>,
 	res: ALMMatcherResponse,
-	next: NextFunction,
-) => {
+): Promise<Response<ALMMatcherResult>> => {
 	try {
 		const { username, id, createdAt } = await createUser(req.body);
 		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
@@ -30,7 +29,7 @@ const login = async (
 	try {
 		const user = await getUserByEmail(req.body.username);
 		if (!user) {
-			return next(new ALMMatcherResult('User doesn\'t exist', 400));
+			return next(new ALMMatcherResult("User doesn't exist", 400));
 		}
 
 		const isPasswordValid = await bcrypt.compare(req.body.password, user.hashedPassword);
@@ -49,7 +48,6 @@ const login = async (
 		return next(new ALMMatcherResult(error.message ?? 'Something went wrong', 400));
 	}
 };
-
 
 export default {
 	register,

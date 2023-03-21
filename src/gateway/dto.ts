@@ -1,7 +1,7 @@
 export type Waiter = {
 	userId: string;
 	joinAt: Date;
-}
+};
 
 export type Game = {
 	state: 'choosing' | 'reveal' | 'finished';
@@ -9,9 +9,9 @@ export type Game = {
 	timerPlay: number;
 	timerRev: number;
 	players: [string, string];
-	whoWin: [Some, Some, Some]
-	actualPlay: Record<string, Move>
-}
+	whoWin: [Some, Some, Some];
+	actualPlay: Record<string, Move>;
+};
 
 export type Some = string | null;
 export type Move = 'rock' | 'paper' | 'scissors';

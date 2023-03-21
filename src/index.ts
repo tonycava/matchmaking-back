@@ -7,7 +7,7 @@ import { Server } from 'socket.io';
 import authRouter from './auth/auth.router';
 
 import { errorHandlerMiddleware } from './common/error.middleware';
-import { CORS_CONFIG } from './lib/utils';
+import { CORS_CONFIG } from './lib/config';
 
 dotenv.config();
 
