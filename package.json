@@ -6,10 +6,12 @@
   "author": "ACAVAGNE <91544506+WeZeOx@users.noreply.github.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --legacy-watch --exec ts-node src/index.ts",
+    "dev": "nodemon --exec ts-node src/index.ts",
     "dev:docker": "npx prisma db push && nodemon --legacy-watch --exec ts-node src/index.ts",
     "start": "node dist/index.js",
     "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "postinstall": "npx prisma generate"
   },
   "dependencies": {

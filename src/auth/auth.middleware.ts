@@ -10,6 +10,6 @@ export const checkIfEmailIsAvailable = async (
 ): Promise<void> => {
 	const { username } = req.body;
 	const user = await getUserByEmail(username);
-	if (user) return next(new ALMMatcherResult("Email already taken",400));
+	if (user) return next(new ALMMatcherResult('Email already taken', 400));
 	return next();
 };
