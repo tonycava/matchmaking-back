@@ -13,10 +13,10 @@ export const register = async (
 ) => {
 	try {
 		const { username, id, createdAt } = await createUser(req.body);
-		const token = jwt.sign({ id, username, createdAt  }, process.env.JWT_SECRET ?? '', {
+		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
 			expiresIn: '7d',
 		});
-		return res.status(201).json(new ALMMatcherResult('User created', 201, { ...{ id, username, createdAt  }, token }));
+		return res.status(201).json(new ALMMatcherResult('User created', 201, { token }));
 	} catch (error) {
 		return res.status(201).json(new ALMMatcherResult('Something went wrong', 400));
 	}
@@ -38,7 +38,8 @@ const login = async (
 			return next(new ALMMatcherResult('Invalid password', 400));
 		}
 
-		const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET ?? '', {
+		const { id, username, createdAt } = user;
+		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
 			expiresIn: '7d',
 		});
 
