@@ -36,8 +36,13 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 	});
 
 	socket.on(WEB_SOCKET_EVENT.CHAT, async (data: { userId: string; message: string }) => {
-		await createChat(data.message, data.userId);
-		io.emit('newMessage', { id: data.userId, content: data.message, date: new Date() });
+		const chat = await createChat(data.message, data.userId);
+		io.emit('newMessage', {
+			id: chat.id,
+			userId: data.userId,
+			content: data.message,
+			createdAt: new Date(),
+		});
 	});
 
 	socket.on(WEB_SOCKET_EVENT.NEW_MESSAGE, async (data: Waiter) => {
