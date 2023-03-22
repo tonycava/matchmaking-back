@@ -7,8 +7,7 @@ const getChat = async (
 	res: ALMMatcherResponse,
 ): Promise<Response<ALMMatcherResult>> => {
 	const messages = await getMessages();
-	console.log(messages);
-	return res.send(new ALMMatcherResult('Chat fetched', 200, { messages }));
+	return res.send(new ALMMatcherResult('Chat.ts fetched', 200, { messages }));
 };
 
 export default { getChat };

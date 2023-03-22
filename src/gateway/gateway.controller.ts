@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { createChat, createGame } from './gateway.service';
 import { Game, Move, Waiter } from './dto';
 import { buildNewGame } from './game.logic';
+import { WEB_SOCKET_EVENT } from '../lib/utils';
 
 let waiters: Waiter[] = [];
 const games: Map<string, Game> = new Map([]);
@@ -17,29 +18,29 @@ const games: Map<string, Game> = new Map([]);
 // 	}
 // }, 1000);
 
-io.on('connection', (socket) => {
+io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 	console.log('a user connected');
 
-	socket.on('leaveWaiting', (data: Waiter) => {
+	socket.on(WEB_SOCKET_EVENT.LEAVE_WAITING, (data: Waiter) => {
 		waiters = waiters.filter((waiter) => waiter.userId !== data.userId);
 	});
 
-	socket.on('joinGame', (gameId) => {
+	socket.on(WEB_SOCKET_EVENT.JOIN_GAME, (gameId) => {
 		socket.join(gameId);
 	});
 
-	socket.on('play', (data: { gameId: string; userId: string; move: Move }) => {
+	socket.on(WEB_SOCKET_EVENT.PLAY, (data: { gameId: string; userId: string; move: Move }) => {
 		const game = games.get(data.gameId)!;
 		game.actualPlay[data.userId] = data.move;
 		games.set(data.gameId, game);
 	});
 
-	socket.on('chat', async (data: { userId: string; message: string }) => {
+	socket.on(WEB_SOCKET_EVENT.CHAT, async (data: { userId: string; message: string }) => {
 		await createChat(data.message, data.userId);
 		io.emit('newMessage', { id: data.userId, content: data.message, date: new Date() });
 	});
 
-	socket.on('joinWaiting', async (data: Waiter) => {
+	socket.on(WEB_SOCKET_EVENT.NEW_MESSAGE, async (data: Waiter) => {
 		socket.join(data.userId);
 
 		if (waiters.length >= 1) {
@@ -61,11 +62,13 @@ io.on('connection', (socket) => {
 					timerRev: 5,
 					players: [partner.userId, data.userId],
 				});
-				io.to([data.userId, partner.userId]).emit('partner', { users: [partner, data], gameId });
+				io.to([data.userId, partner.userId]).emit(WEB_SOCKET_EVENT.PARTNER, {
+					users: [partner, data],
+					gameId,
+				});
 			} catch (error) {
-				console.log(error);
+				console.error(error);
 			}
-
 			return;
 		}
 		waiters.push(data);
