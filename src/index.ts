@@ -17,11 +17,13 @@ const server = http.createServer(app);
 export const io = new Server(server, { cors: CORS_CONFIG });
 
 import './gateway/gateway.controller';
+import chatRouter from './chat/chat.router';
 
 app.use(express.json());
 app.use(cors(CORS_CONFIG));
 
 app.use('/auth', authRouter);
+app.use('/chat', chatRouter);
 
 app.get('/', (req, res) => res.send('Hello World!'));
 

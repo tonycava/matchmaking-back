@@ -1,6 +1,6 @@
 import { io } from '../index';
 import crypto from 'crypto';
-import { createGame } from './gateway.service';
+import { createChat, createGame } from './gateway.service';
 import { Game, Move, Waiter } from './dto';
 import { buildNewGame } from './game.logic';
 
@@ -32,6 +32,11 @@ io.on('connection', (socket) => {
 		const game = games.get(data.gameId)!;
 		game.actualPlay[data.userId] = data.move;
 		games.set(data.gameId, game);
+	});
+
+	socket.on('chat', async (data: { userId: string; message: string }) => {
+		await createChat(data.message, data.userId);
+		io.emit('newMessage', { id: data.userId, content: data.message, date: new Date() });
 	});
 
 	socket.on('joinWaiting', async (data: Waiter) => {
