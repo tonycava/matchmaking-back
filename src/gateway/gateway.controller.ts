@@ -2,11 +2,10 @@ import { io } from '../index';
 import crypto from 'crypto';
 import { createChat, createGame } from './gateway.service';
 import { Game, Move, Waiter } from './dto';
-import { buildNewGame } from './game.logic';
 import { WEB_SOCKET_EVENT } from '../lib/utils';
 
-let waiters: Waiter[] = [];
-const games: Map<string, Game> = new Map([]);
+const waiters = new Map<string, Waiter>([]);
+const games = new Map<string, Game>([]);
 
 // setInterval(() => {
 // 	for (const [gameId, game] of games) {
@@ -14,7 +13,7 @@ const games: Map<string, Game> = new Map([]);
 // 		games.set(gameId, newGame);
 // 		io
 // 			.to(gameId)
-// 			.emit('update', newGame);
+// 			.emit(WEB_SOCKET_EVENT.UPDATE, newGame);
 // 	}
 // }, 1000);
 
@@ -22,7 +21,7 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 	console.log('a user connected');
 
 	socket.on(WEB_SOCKET_EVENT.LEAVE_WAITING, (data: Waiter) => {
-		waiters = waiters.filter((waiter) => waiter.userId !== data.userId);
+		waiters.delete(data.userId);
 	});
 
 	socket.on(WEB_SOCKET_EVENT.JOIN_GAME, (gameId) => {
@@ -37,7 +36,7 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 
 	socket.on(WEB_SOCKET_EVENT.CHAT, async (data: { userId: string; message: string }) => {
 		const chat = await createChat(data.message, data.userId);
-		io.emit('newMessage', {
+		io.emit(WEB_SOCKET_EVENT.NEW_MESSAGE, {
 			id: chat.id,
 			userId: data.userId,
 			content: data.message,
@@ -46,13 +45,14 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 		});
 	});
 
-	socket.on(WEB_SOCKET_EVENT.NEW_MESSAGE, async (data: Waiter) => {
+	socket.on(WEB_SOCKET_EVENT.JOIN_WAITING, async (data: Waiter) => {
 		socket.join(data.userId);
 
-		if (waiters.length >= 1) {
-			const partner = waiters.shift()!;
-			// if (waiters.includes({ userId: partner.userId })) return
-			// if (partner.userId === data.userId) return;
+		if (waiters.size >= 1) {
+			const [firstPartner] = waiters.entries();
+			const [partnerId, partner] = firstPartner;
+			if (partnerId === data.userId) return;
+			waiters.delete(partnerId);
 			const gameId = crypto.randomUUID();
 			try {
 				await createGame(gameId);
@@ -61,14 +61,14 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 					whoWin: [null, null, null],
 					round: 1,
 					actualPlay: {
-						[partner.userId]: 'rock',
+						[partnerId]: 'rock',
 						[data.userId]: 'scissors',
 					},
 					timerPlay: 10,
 					timerRev: 5,
-					players: [partner.userId, data.userId],
+					players: [partnerId, data.userId],
 				});
-				io.to([data.userId, partner.userId]).emit(WEB_SOCKET_EVENT.PARTNER, {
+				io.to([data.userId, partnerId]).emit(WEB_SOCKET_EVENT.PARTNER, {
 					users: [partner, data],
 					gameId,
 				});
@@ -77,6 +77,8 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 			}
 			return;
 		}
-		waiters.push(data);
+
+		if (waiters.has(data.userId)) return;
+		waiters.set(data.userId, data);
 	});
 });
