@@ -42,6 +42,7 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 			userId: data.userId,
 			content: data.message,
 			createdAt: new Date(),
+			user: { username: chat.user.username },
 		});
 	});
 

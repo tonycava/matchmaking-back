@@ -5,6 +5,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 
 import authRouter from './auth/auth.router';
+import chatRouter from './chat/chat.router';
 
 import { errorHandlerMiddleware } from './common/error.middleware';
 import { CORS_CONFIG } from './lib/utils';
@@ -17,7 +18,6 @@ const server = http.createServer(app);
 export const io = new Server(server, { cors: CORS_CONFIG });
 
 import './gateway/gateway.controller';
-import chatRouter from './chat/chat.router';
 
 app.use(express.json());
 app.use(cors(CORS_CONFIG));

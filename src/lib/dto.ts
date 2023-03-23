@@ -6,3 +6,8 @@ export const authDTO = z.object({
 });
 
 export type AuthDTO = z.infer<typeof authDTO>;
+
+export type Range = {
+	start: string;
+	end: string;
+};
