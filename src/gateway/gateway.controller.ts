@@ -1,7 +1,7 @@
 import { io } from '../index';
 import crypto from 'crypto';
 import { createChat, createGame } from './gateway.service';
-import { Game, Move, Waiter } from './dto';
+import { ChatDTO, Game, PlayDTO, Waiter } from './dto';
 import { WEB_SOCKET_EVENT } from '../lib/utils';
 
 const waiters = new Map<string, Waiter>([]);
@@ -24,17 +24,17 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 		waiters.delete(data.userId);
 	});
 
-	socket.on(WEB_SOCKET_EVENT.JOIN_GAME, (gameId) => {
+	socket.on(WEB_SOCKET_EVENT.JOIN_GAME, (gameId: string) => {
 		socket.join(gameId);
 	});
 
-	socket.on(WEB_SOCKET_EVENT.PLAY, (data: { gameId: string; userId: string; move: Move }) => {
+	socket.on(WEB_SOCKET_EVENT.PLAY, (data: PlayDTO) => {
 		const game = games.get(data.gameId)!;
 		game.actualPlay[data.userId] = data.move;
 		games.set(data.gameId, game);
 	});
 
-	socket.on(WEB_SOCKET_EVENT.CHAT, async (data: { userId: string; message: string }) => {
+	socket.on(WEB_SOCKET_EVENT.CHAT, async (data: ChatDTO) => {
 		const chat = await createChat(data.message, data.userId);
 		io.emit(WEB_SOCKET_EVENT.NEW_MESSAGE, {
 			id: chat.id,

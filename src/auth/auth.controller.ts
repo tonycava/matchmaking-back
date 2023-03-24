@@ -1,4 +1,4 @@
-import { ALMMatcherRequest, ALMMatcherResponse, ALMMatcherResult } from '../common/interfaces';
+import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
 import { AuthDTO } from '../lib/dto';
 import { NextFunction, Response } from 'express';
 import process from 'process';
@@ -7,34 +7,34 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 export const register = async (
-	req: ALMMatcherRequest<AuthDTO>,
-	res: ALMMatcherResponse,
-): Promise<Response<ALMMatcherResult>> => {
+	req: AMLRequest<AuthDTO>,
+	res: AMLResponse,
+): Promise<Response<AMLResult>> => {
 	try {
 		const { username, id, createdAt } = await createUser(req.body);
 		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
 			expiresIn: '7d',
 		});
-		return res.status(201).json(new ALMMatcherResult('User created', 201, { token }));
+		return res.status(201).json(new AMLResult('User created', 201, { token }));
 	} catch (error) {
-		return res.status(201).json(new ALMMatcherResult('Something went wrong', 400));
+		return res.status(201).json(new AMLResult('Something went wrong', 400));
 	}
 };
 
 const login = async (
-	req: ALMMatcherRequest<AuthDTO>,
-	res: ALMMatcherResponse,
+	req: AMLRequest<AuthDTO>,
+	res: AMLResponse,
 	next: NextFunction,
-): Promise<Response<ALMMatcherResult> | void> => {
+): Promise<Response<AMLResult> | void> => {
 	try {
 		const user = await getUserByEmail(req.body.username);
 		if (!user) {
-			return next(new ALMMatcherResult("User doesn't exist", 400));
+			return next(new AMLResult("User doesn't exist", 400));
 		}
 
 		const isPasswordValid = await bcrypt.compare(req.body.password, user.hashedPassword);
 		if (!isPasswordValid) {
-			return next(new ALMMatcherResult('Invalid password', 400));
+			return next(new AMLResult('Invalid password', 400));
 		}
 
 		const { id, username, createdAt } = user;
@@ -42,10 +42,10 @@ const login = async (
 			expiresIn: '7d',
 		});
 
-		if (!token) return next(new ALMMatcherResult('Unauthorized', 401));
-		return res.json(new ALMMatcherResult('User logged in', 200, { token }));
+		if (!token) return next(new AMLResult('Unauthorized', 401));
+		return res.json(new AMLResult('User logged in', 200, { token }));
 	} catch (error: any) {
-		return next(new ALMMatcherResult(error.message ?? 'Something went wrong', 400));
+		return next(new AMLResult(error.message ?? 'Something went wrong', 400));
 	}
 };
 

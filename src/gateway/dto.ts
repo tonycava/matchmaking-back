@@ -3,6 +3,17 @@ export type Waiter = {
 	joinAt: Date;
 };
 
+export type PlayDTO = {
+	gameId: string;
+	userId: string;
+	move: Move;
+};
+
+export type ChatDTO = {
+	userId: string;
+	message: string;
+};
+
 export type Game = {
 	state: 'choosing' | 'reveal' | 'finished';
 	round: number;
