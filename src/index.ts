@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
+import process from 'process';
 
 import authRouter from './auth/auth.router';
 import chatRouter from './chat/chat.router';
@@ -31,6 +32,10 @@ app.get('/', (req, res) => res.send('Hello World!'));
 
 app.use(errorHandlerMiddleware);
 
-server.listen(PORT, () => {
-	console.log(`Server is running on port http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+	server.listen(PORT, () => {
+		console.log(`Server is running on http://localhost:${PORT}`);
+	});
+}
+
+export default app;
