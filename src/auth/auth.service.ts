@@ -3,7 +3,7 @@ import { AuthDTO } from '../lib/dto';
 import bcrypt from 'bcrypt';
 import { type User } from '@prisma/client';
 
-export const getUserByEmail = async (username: string): Promise<User | null> => {
+export const getUserByUsername = async (username: string): Promise<User | null> => {
 	return await prisma.user.findUnique({
 		where: { username },
 	});

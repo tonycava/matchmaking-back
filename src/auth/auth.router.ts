@@ -1,6 +1,6 @@
 import express from 'express';
 import { dtoValidation } from '../common/middleware';
-import { checkIfEmailIsAvailable } from './auth.middleware';
+import { checkIfUsernameIsAvailable } from './auth.middleware';
 import { authDTO } from '../lib/dto';
 import AuthController from './auth.controller';
 
@@ -14,7 +14,7 @@ router.post(
 router.post(
 	'/register',
 	(req, res, next) => dtoValidation(next, req.body, authDTO),
-	checkIfEmailIsAvailable,
+	checkIfUsernameIsAvailable,
 	AuthController.register,
 );
 

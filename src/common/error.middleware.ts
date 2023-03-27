@@ -1,15 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
-
-export class ErrorMiddleware<T> {
-	constructor(public code: number, public message: string, public payload: T) {}
-}
+import { AMLResult } from './interfaces';
 
 export const errorHandlerMiddleware = (
-	error: ErrorMiddleware<unknown>,
+	error: AMLResult,
 	req: Request,
 	res: Response,
 	next: NextFunction,
-): void => {
-	res.status(error.code).send({ message: error.message, payload: error.payload });
-	return next();
+): Response => {
+	return res
+		.status(error.code)
+		.send({ message: error.message, code: error.code, data: error.data });
 };

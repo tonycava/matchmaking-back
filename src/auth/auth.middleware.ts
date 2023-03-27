@@ -1,15 +1,16 @@
 import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
 import { NextFunction } from 'express';
-import { getUserByEmail } from './auth.service';
+import { getUserByUsername } from './auth.service';
 import { AuthDTO } from '../lib/dto';
+import { Response } from 'express';
 
-export const checkIfEmailIsAvailable = async (
+export const checkIfUsernameIsAvailable = async (
 	req: AMLRequest<AuthDTO>,
 	res: AMLResponse,
 	next: NextFunction,
-): Promise<void> => {
+): Promise<void | Response> => {
 	const { username } = req.body;
-	const user = await getUserByEmail(username);
-	if (user) return next(new AMLResult('Email already taken', 400));
+	const user = await getUserByUsername(username);
+	if (user) return res.send(new AMLResult('Username already taken', 404));
 	return next();
 };
