@@ -2,7 +2,6 @@ import request from 'supertest';
 import app from '../index';
 import prisma from '../lib/db';
 import { isAMLResultShaped } from '../common/tests';
-
 describe('Auth - Register', () => {
 	beforeEach(async () => {
 		await prisma.chat.deleteMany();
@@ -46,7 +45,6 @@ describe('Auth - Login', () => {
 			username: 'matis',
 			password: 'Root1234!',
 		});
-		console.log(result.body);
 		expect(result.status).toBe(404);
 		expect(isAMLResultShaped(result.body)).toBe(true);
 	});
@@ -61,67 +59,6 @@ describe('Auth - Login', () => {
 	});
 });
 
-//
-// describe('Auth - Verify email', () => {
-// 	let testUser: User;
-// 	beforeAll(async () => {
-// 		await prisma.user.deleteMany();
-// 		await prisma.pool.deleteMany();
-// 		await createPool({ name: 'test', domains: ['localhost:3000'] });
-// 		await createUser({
-// 			email: 'test@test.com',
-// 			poolName: 'test',
-// 			password: 'test',
-// 			disableVerification: true,
-// 		});
-// 	});
-// 	beforeEach(async () => {
-// 		await prisma.user.update({
-// 			where: { username: 'test@test.com' },
-// 			data: { verified: false },
-// 		});
-// 		testUser = await prisma.user.findUnique({
-// 			where: { username: 'test@test.com' },
-// 		});
-// 	});
-//
-// 	it('should verify email correctly', async () => {
-// 		const token = generateEmailVerificationToken(testUser);
-// 		const result = await request(app).get(`/auth/verify?token=${token}`);
-// 		expect(result.status).toBe(200);
-// 		expect(isRMSResultShaped(result.body)).toBe(true);
-// 		if (!isRMSResultShaped(result.body)) return;
-// 		expect(result.body.data).toHaveProperty('user');
-// 		expect(result.body.data.user).toHaveProperty('verified');
-// 		expect(result.body.data.user.verified).toBe(true);
-// 	});
-//
-// 	it('should not verify email with invalid token', async () => {
-// 		const token = 'invalid token';
-// 		const result = await request(app).get(`/auth/verify?token=${token}`);
-// 		expect(result.status).toBe(401);
-// 		expect(isRMSResultShaped(result.body)).toBe(true);
-// 	});
-//
-// 	it('should not verify email with expired token', async () => {
-// 		const token = generateEmailVerificationToken(testUser, -1);
-// 		const result = await request(app).get(`/auth/verify?token=${token}`);
-// 		expect(result.status).toBe(401);
-// 		expect(isRMSResultShaped(result.body)).toBe(true);
-// 	});
-//
-// 	it('should not verify email with already verified user', async () => {
-// 		const token = generateEmailVerificationToken(testUser);
-// 		await prisma.user.update({
-// 			where: { username: 'test@test.com' },
-// 			data: { verified: true },
-// 		});
-// 		const result = await request(app).get(`/auth/verify?token=${token}`);
-// 		expect(result.status).toBe(401);
-// 		expect(isRMSResultShaped(result.body)).toBe(true);
-// 	});
-// });
-//
 // describe('Auth - Reset password', () => {
 // 	const createTestUser = async (): Promise<void> => {
 // 		await createUser({

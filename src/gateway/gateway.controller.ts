@@ -1,6 +1,7 @@
 import { io } from '../index';
 import crypto from 'crypto';
-import { createChat, createGame } from './gateway.service';
+import { createGame } from './gateway.service';
+import { createChat} from '../chat/chat.service';
 import { ChatDTO, Game, PlayDTO, Waiter } from './dto';
 import { WEB_SOCKET_EVENT } from '../lib/utils';
 
