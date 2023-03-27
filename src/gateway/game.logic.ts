@@ -4,15 +4,12 @@ export const whoWin = (player1Move: Move, player2Move: Move): WhoWin | null => {
 	if (player1Move === player2Move) return null;
 	if (player1Move === 'rock' && player2Move === 'scissors') return 'player1';
 	if (player1Move === 'rock' && player2Move === 'paper') return 'player2';
-	if (player1Move === 'rock' && player2Move === 'rock') return null;
 
 	if (player1Move === 'paper' && player2Move === 'rock') return 'player1';
 	if (player1Move === 'paper' && player2Move === 'scissors') return 'player2';
-	if (player1Move === 'paper' && player2Move === 'paper') return null;
 
 	if (player1Move === 'scissors' && player2Move === 'paper') return 'player1';
 	if (player1Move === 'scissors' && player2Move === 'rock') return 'player2';
-	if (player1Move === 'scissors' && player2Move === 'scissors') return null;
 
 	return null;
 };
@@ -44,7 +41,7 @@ export const buildNewGame = (game: Game): Game => {
 		const who = whoWin(game.actualPlay[game.players[0]], game.actualPlay[game.players[1]]);
 
 		if (who === 'player1') game.whoWin[game.round - 1] = game.players[0];
-		if (who === 'player2') game.whoWin[game.round - 1] = game.players[0];
+		if (who === 'player2') game.whoWin[game.round - 1] = game.players[1];
 		return {
 			...game,
 			timerRev: 5,

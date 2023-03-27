@@ -1,22 +1,21 @@
 import { io } from '../index';
 import crypto from 'crypto';
 import { createGame } from './gateway.service';
-import { createChat} from '../chat/chat.service';
+import { createChat } from '../chat/chat.service';
 import { ChatDTO, Game, PlayDTO, Waiter } from './dto';
 import { WEB_SOCKET_EVENT } from '../lib/utils';
+import { buildNewGame } from './game.logic';
 
 const waiters = new Map<string, Waiter>([]);
 const games = new Map<string, Game>([]);
 
-// setInterval(() => {
-// 	for (const [gameId, game] of games) {
-// 		const newGame = buildNewGame(game);
-// 		games.set(gameId, newGame);
-// 		io
-// 			.to(gameId)
-// 			.emit(WEB_SOCKET_EVENT.UPDATE, newGame);
-// 	}
-// }, 1000);
+setInterval(() => {
+	for (const [gameId, game] of games) {
+		const newGame = buildNewGame(game);
+		games.set(gameId, newGame);
+		io.to(gameId).emit(WEB_SOCKET_EVENT.UPDATE, newGame);
+	}
+}, 1000);
 
 io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 	console.log('a user connected');
@@ -63,14 +62,14 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 					round: 1,
 					actualPlay: {
 						[partnerId]: 'rock',
-						[data.userId]: 'scissors',
+						[data.userId]: 'rock',
 					},
 					timerPlay: 10,
 					timerRev: 5,
 					players: [partnerId, data.userId],
 				});
 				io.to([data.userId, partnerId]).emit(WEB_SOCKET_EVENT.PARTNER, {
-					users: [partner, data],
+					users: [partner.userId, data.userId],
 					gameId,
 				});
 			} catch (error) {
