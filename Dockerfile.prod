@@ -1,11 +1,16 @@
 FROM node:16.17-alpine3.16 as deps
+
 WORKDIR /app
+
 COPY package.json yarn.lock ./
+COPY prisma ./prisma
+
+RUN yarn install --production --frozen-lockfile
+RUN npx prisma generate
+
 COPY . .
-RUN yarn install --frozen-lockfile
 RUN yarn build
 
-RUN ls -la && pwd
 ## this is stage two , where the app actually runs
 
 FROM node:16.17-alpine3.16
@@ -13,8 +18,7 @@ FROM node:16.17-alpine3.16
 EXPOSE 3000
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install --production --frozen-lockfile
-COPY /app/dist ./dist
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/dist ./dist
 
 CMD ["yarn", "start"]
