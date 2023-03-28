@@ -1,4 +1,6 @@
-export const CORS_CONFIG = {
+import type { CorsOptions } from 'cors';
+
+export const CORS_CONFIG: CorsOptions = {
 	origin: ['http://localhost:11001'],
 	credentials: true,
 };

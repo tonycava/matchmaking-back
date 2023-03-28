@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { type Request, type Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import http from 'http';
@@ -11,6 +11,7 @@ import leaderboardRouter from './leaderboard/leaderboard.router';
 
 import { errorHandlerMiddleware } from './common/error.middleware';
 import { CORS_CONFIG } from './lib/utils';
+import './gateway/gateway.controller';
 
 dotenv.config();
 
@@ -19,8 +20,6 @@ const app = express();
 const server = http.createServer(app);
 export const io = new Server(server, { cors: CORS_CONFIG });
 
-import './gateway/gateway.controller';
-
 app.use(express.json());
 app.use(cors(CORS_CONFIG));
 
@@ -28,7 +27,7 @@ app.use('/auth', authRouter);
 app.use('/chat', chatRouter);
 app.use('/leaderboard', leaderboardRouter);
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.get('/', (req: Request, res: Response) => res.send('Hello World!'));
 
 app.use(errorHandlerMiddleware);
 
