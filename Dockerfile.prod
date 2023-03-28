@@ -5,10 +5,13 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 COPY prisma ./prisma
 
+RUN yarn global add typescript
+
 RUN yarn install --production --frozen-lockfile \
     && yarn build \
     && npx prisma generate \
     && yarn cache clean
+
 
 COPY . .
 
