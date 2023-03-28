@@ -5,8 +5,8 @@ export const formatZodParseResponse = <Input = any, Output = any>(
 	error: SafeParseReturnType<Input, Output>,
 ): string[] => {
 	if (error.success) return [];
-	const errors = error.error.errors;
-	return errors.map((error) => error.message);
+	const errors = (error as any).error.errors;
+	return errors.map((error: any) => error.message);
 };
 
 export const formatZodParseResponseOneLine = <Input = any, Output = any>(
