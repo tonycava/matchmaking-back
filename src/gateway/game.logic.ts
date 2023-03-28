@@ -1,4 +1,4 @@
-import { Game, Move, WhoWin } from './dto';
+import { Game, Move, Some, WhoWin } from './dto';
 
 export const whoWin = (player1Move: Move, player2Move: Move): WhoWin | null => {
 	if (player1Move === player2Move) return null;
@@ -55,4 +55,41 @@ export const buildNewGame = (game: Game): Game => {
 		timerPlay: newTimerPlay,
 		timerRev: newTimerRev,
 	};
+};
+
+type GameLogic = {
+	winnerId: string;
+	loserId: string;
+};
+
+export const getWinningPlayer = (
+	whoWin: [Some, Some, Some],
+	players: [string, string],
+): GameLogic | null => {
+	const [player1, player2] = players;
+	const records: Record<string, number> = { null: 0, [player1]: 0, [player2]: 0 };
+
+	for (let i = 0; i < whoWin.length; i++) records[whoWin[i]] += 1;
+
+	if (records['null'] === 0) {
+		if (records[player1] > records[player2]) return { winnerId: player1, loserId: player2 };
+		return {
+			winnerId: player2,
+			loserId: player1,
+		};
+	}
+
+	if (records['null'] === 1) {
+		if (records[player1] === 2) return { winnerId: player1, loserId: player2 };
+		if (records[player2] === 2) return { winnerId: player2, loserId: player1 };
+		return null;
+	}
+
+	if (records['null'] === 2) {
+		if (records[player1] === 1) return { winnerId: player1, loserId: player2 };
+		if (records[player2] === 1) return { winnerId: player2, loserId: player1 };
+		return null;
+	}
+
+	if (records['null'] === 3) return null;
 };

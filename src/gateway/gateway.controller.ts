@@ -1,16 +1,21 @@
 import { io } from '../index';
 import crypto from 'crypto';
-import { createGame } from './gateway.service';
+import { createGame, updateGame } from './gateway.service';
 import { createChat } from '../chat/chat.service';
 import { ChatDTO, Game, PlayDTO, Waiter } from './dto';
 import { WEB_SOCKET_EVENT } from '../lib/utils';
-import { buildNewGame } from './game.logic';
+import { buildNewGame, getWinningPlayer } from './game.logic';
 
 const waiters = new Map<string, Waiter>([]);
 const games = new Map<string, Game>([]);
 
-setInterval(() => {
+setInterval(async () => {
 	for (const [gameId, game] of games) {
+		if (game.state === 'finished') {
+			games.delete(gameId);
+			await updateGame(gameId, getWinningPlayer(game.whoWin, game.players));
+			continue;
+		}
 		const newGame = buildNewGame(game);
 		games.set(gameId, newGame);
 		io.to(gameId).emit(WEB_SOCKET_EVENT.UPDATE, newGame);
