@@ -5,6 +5,7 @@ COPY . .
 RUN yarn install --frozen-lockfile
 RUN yarn build
 
+RUN ls -la && pwd
 ## this is stage two , where the app actually runs
 
 FROM node:16.17-alpine3.16
