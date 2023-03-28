@@ -1,7 +1,7 @@
 import type { CorsOptions } from 'cors';
 
 export const CORS_CONFIG: CorsOptions = {
-	origin: '*',
+	origin: ['http://localhost:[0-9]', 'https://aml.tonycava.dev'],
 	credentials: true,
 };
 
