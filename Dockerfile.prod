@@ -7,7 +7,7 @@ COPY prisma ./prisma
 
 RUN yarn global add typescript tsc
 RUN yarn install --production --frozen-lockfile
-RUN ./node_modules/.bin/tsc
+RUN tsc
 RUN npx prisma generate
 
 
