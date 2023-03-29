@@ -21,7 +21,7 @@ export type Game = {
 	timerRev: number;
 	players: [string, string];
 	whoWin: [Some, Some, Some];
-	actualPlay: Record<string, Move>;
+	actualPlay: { [p: string]: Move };
 };
 
 export type Some = string | null;
