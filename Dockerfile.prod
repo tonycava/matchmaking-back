@@ -2,10 +2,12 @@ FROM node:16.17-alpine3.16 as deps
 
 WORKDIR /app
 
+RUN yarn global add typescript tsc
+
 COPY package.json ./
 COPY prisma ./prisma
 
-RUN yarn global add typescript tsc
+
 RUN yarn install --production --frozen-lockfile
 
 COPY . .
