@@ -1,6 +1,6 @@
 import express from 'express';
 import LeaderboardController from './leaderboard.controller';
-import { checkAuth } from './leaderboard.middleware';
+import { checkAuth } from '../common/middleware';
 
 const router = express.Router();
 

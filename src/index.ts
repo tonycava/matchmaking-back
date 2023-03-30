@@ -8,6 +8,7 @@ import process from 'process';
 import authRouter from './auth/auth.router';
 import chatRouter from './chat/chat.router';
 import leaderboardRouter from './leaderboard/leaderboard.router';
+import userRouter from './user/user.router';
 
 import { errorHandlerMiddleware } from './common/error.middleware';
 import { CORS_CONFIG } from './lib/utils';
@@ -27,6 +28,7 @@ app.use(cors(CORS_CONFIG));
 app.use('/auth', authRouter);
 app.use('/chat', chatRouter);
 app.use('/leaderboard', leaderboardRouter);
+app.use('/user', userRouter);
 
 app.get('/', (req: Request, res: Response) => res.send('Hello World!'));
 
