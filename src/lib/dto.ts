@@ -5,6 +5,12 @@ export const authDTO = z.object({
 	password: z.string().min(1, { message: 'Password is required' }),
 });
 
+export const uploadProfilePictureDTO = z.object({
+	profilePicture: z.string().min(1, { message: 'Profile picture is required' }),
+});
+
+export type UploadProfilePictureDTO = z.infer<typeof uploadProfilePictureDTO>;
+
 export type AuthDTO = z.infer<typeof authDTO>;
 
 export type Range = {

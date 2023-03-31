@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 
 export class AMLResult<D = Record<string, any>> {
-	constructor(public message: string, public code: number, public data?: D) {}
+	constructor(public message: string, public code: number, public data: D = null) {}
 }
 
 export type AMLRequest<Body, Query = null> = Request<any, AMLResult, Body, Query>;

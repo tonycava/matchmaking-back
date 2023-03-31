@@ -36,4 +36,3 @@ export const checkAuth = async (
 	}
 	return res.json(new AMLResult('Unauthorized', 401));
 };
-
