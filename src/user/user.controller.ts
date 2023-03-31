@@ -12,14 +12,21 @@ const getInformations = async (
 	>,
 	next: NextFunction,
 ): Promise<void | Response<
-	AMLResult<{ profilePicture: string }>,
+	AMLResult<{ profilePicture: string; id: string; username: string; createdAt: Date }>,
 	{ user: Pick<User, 'id' | 'username' | 'createdAt'> }
 >> => {
 	const { userid = '' } = req.headers as { userid: string };
 	if (!userid) return next(new AMLResult('Missing userId', 400));
 
-	const { profilePicture } = await getUserProfilePicture(userid);
-	return res.json(new AMLResult('Profile picture retrieved successfully', 200, { profilePicture }));
+	const { profilePicture, id, username, createdAt } = await getUserProfilePicture(userid);
+	return res.json(
+		new AMLResult('Profile picture retrieved successfully', 200, {
+			profilePicture,
+			id,
+			username,
+			createdAt,
+		}),
+	);
 };
 
 const uploadProfilePicture = async (
