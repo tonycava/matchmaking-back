@@ -24,7 +24,15 @@ const getInformations = async (
 	const { userid = '' } = req.headers as { userid: string };
 	if (!userid) return next(new AMLResult('Missing userId', 400));
 
-	const { profilePicture, id, username, createdAt, chats } = await getUserInformationById(userid);
+	const {
+		profilePicture,
+		id,
+		username,
+		createdAt,
+		chats,
+		_count: { loserGames, winnerGames },
+	} = await getUserInformationById(userid);
+
 	return res.json(
 		new AMLResult('Profile picture retrieved successfully', 200, {
 			user: {
@@ -32,6 +40,8 @@ const getInformations = async (
 				username,
 				createdAt,
 				profilePicture,
+				numberOfWins: winnerGames,
+				numberOfLoses: loserGames,
 			},
 			chats,
 		}),

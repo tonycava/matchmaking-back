@@ -11,7 +11,12 @@ type UserDTO = {
 
 export const getUserInformationById = (
 	userId: string,
-): Promise<UserDTO & { chats: ChatService[] }> => {
+): Promise<
+	UserDTO & {
+		chats: ChatService[];
+		_count: { loserGames: number; winnerGames: number };
+	}
+> => {
 	return prisma.user.findUnique({
 		where: { id: userId },
 		select: {
@@ -19,6 +24,12 @@ export const getUserInformationById = (
 			username: true,
 			createdAt: true,
 			profilePicture: true,
+			_count: {
+				select: {
+					loserGames: true,
+					winnerGames: true,
+				},
+			},
 			chats: {
 				select: {
 					userId: true,
