@@ -5,13 +5,13 @@ import { uploadProfilePictureDTO } from '../lib/dto';
 
 const router = express.Router();
 
-router.get('/', checkAuth, UserController.getInformations);
-
 router.post(
 	'/upload-profile-picture',
-	checkAuth,
 	(req, res, next) => dtoValidation(next, req.body, uploadProfilePictureDTO),
+	checkAuth,
 	UserController.uploadProfilePicture,
 );
+
+router.get('/', checkAuth, UserController.getInformations);
 
 export default router;

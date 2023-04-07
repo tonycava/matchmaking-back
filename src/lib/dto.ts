@@ -9,6 +9,14 @@ export const uploadProfilePictureDTO = z.object({
 	profilePicture: z.string().min(1, { message: 'Profile picture is required' }),
 });
 
+export type LocalsDTO = {
+	user: {
+		id: string;
+		username: string;
+		createdAt: Date;
+	};
+};
+
 export type UploadProfilePictureDTO = z.infer<typeof uploadProfilePictureDTO>;
 
 export type AuthDTO = z.infer<typeof authDTO>;
