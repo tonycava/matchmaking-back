@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: matchmaking-db-k8s
+spec:
+  selector:
+    app: matchmaking-db-k8s
+  ports:
+    - port: 5432
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matchmaking-db-k8s
+spec:
+  selector:
+    matchLabels:
+      app: matchmaking-db-k8s
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: matchmaking-db-k8s
+    spec:
+      containers:
+        - name: matchmaking-db-k8s
+          image: postgres:12.2-alpine
+          envFrom:
+            - configMapRef:
+                name: matchmaking-secret
