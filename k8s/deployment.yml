@@ -28,4 +28,4 @@ spec:
           image: tonycava/matchmaking-back-k8s
           envFrom:
             - configMapRef:
-                name: matchmaking-secret
+                name: matchmaking-back-config
