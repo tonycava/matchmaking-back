@@ -28,4 +28,4 @@ spec:
           image: postgres:12.2-alpine
           envFrom:
             - configMapRef:
-                name: matchmaking-secret
+                name: matchmaking-back-config
