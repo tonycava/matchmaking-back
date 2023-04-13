@@ -13,20 +13,20 @@ export const getTopTenWinners = async (): Promise<Leaderboard[]> => {
 			id: true,
 			username: true,
 			winnerGames: {
-				select: { id: true },
+				select: { id: true }
 			},
 			loserGames: {
-				select: { id: true },
-			},
+				select: { id: true }
+			}
 		},
 		orderBy: [{ winnerGames: { _count: 'desc' } }, { loserGames: { _count: 'desc' } }],
-		take: 10,
+		take: 10
 	});
 
 	return topUsers.map((user) => ({
 		id: user.id,
 		username: user.username,
 		numberOfWins: user.winnerGames.length,
-		numberOfLosses: user.loserGames.length,
+		numberOfLosses: user.loserGames.length
 	}));
 };

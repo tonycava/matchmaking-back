@@ -5,7 +5,7 @@ export const errorHandlerMiddleware = (
 	error: AMLResult,
 	req: Request,
 	res: Response,
-	next: NextFunction,
+	next: NextFunction
 ): Response => {
 	return res
 		.status(error.code)

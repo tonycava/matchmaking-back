@@ -8,15 +8,25 @@ const getInformations = async (
 	req: AMLRequest<never>,
 	res: AMLResponse<
 		{
-			user: { profilePicture: string; id: string; username: string; createdAt: Date };
+			user: {
+				profilePicture: string;
+				id: string;
+				username: string;
+				createdAt: Date;
+			};
 			chats: ChatService[];
 		},
 		LocalsDTO
 	>,
-	next: NextFunction,
+	next: NextFunction
 ): Promise<void | Response<
 	AMLResult<{
-		user: { profilePicture: string; id: string; username: string; createdAt: Date };
+		user: {
+			profilePicture: string;
+			id: string;
+			username: string;
+			createdAt: Date;
+		};
 		chats: ChatService[];
 	}>,
 	LocalsDTO
@@ -30,7 +40,7 @@ const getInformations = async (
 		username,
 		createdAt,
 		chats,
-		_count: { loserGames, winnerGames },
+		_count: { loserGames, winnerGames }
 	} = await getUserInformationById(userid);
 
 	return res.json(
@@ -41,24 +51,28 @@ const getInformations = async (
 				createdAt,
 				profilePicture,
 				numberOfWins: winnerGames,
-				numberOfLoses: loserGames,
+				numberOfLoses: loserGames
 			},
-			chats,
-		}),
+			chats
+		})
 	);
 };
 
 const uploadProfilePicture = async (
 	req: AMLRequest<UploadProfilePictureDTO>,
-	res: AMLResponse<{ profilePicture: string }, LocalsDTO>,
+	res: AMLResponse<{ profilePicture: string }, LocalsDTO>
 ): Promise<Response<AMLResult<{ profilePicture: string }>, LocalsDTO>> => {
 	const { profilePicture } = await changeProfilePicture(
 		res.locals.user.id,
-		req.body.profilePicture,
+		req.body.profilePicture
 	);
-	return res.json(new AMLResult('Profile picture updated successfully', 200, { profilePicture }));
+	return res.json(
+		new AMLResult('Profile picture updated successfully', 200, {
+			profilePicture
+		})
+	);
 };
 export default {
 	getInformations,
-	uploadProfilePicture,
+	uploadProfilePicture
 };

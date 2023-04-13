@@ -23,7 +23,7 @@ export const buildNewGame = (game: Game): Game => {
 			...game,
 			timerPlay: 0,
 			timerRev: 0,
-			state: 'finished',
+			state: 'finished'
 		};
 	}
 
@@ -33,7 +33,7 @@ export const buildNewGame = (game: Game): Game => {
 			timerRev: 0,
 			timerPlay: 10,
 			round: game.round + 1,
-			state: 'choosing',
+			state: 'choosing'
 		};
 	}
 
@@ -46,14 +46,14 @@ export const buildNewGame = (game: Game): Game => {
 			...game,
 			timerRev: 5,
 			timerPlay: 0,
-			state: 'reveal',
+			state: 'reveal'
 		};
 	}
 
 	return {
 		...game,
 		timerPlay: newTimerPlay,
-		timerRev: newTimerRev,
+		timerRev: newTimerRev
 	};
 };
 
@@ -64,10 +64,14 @@ type GameLogic = {
 
 export const getWinningPlayer = (
 	whoWin: [Some, Some, Some],
-	players: [string, string],
+	players: [string, string]
 ): GameLogic | null => {
 	const [player1, player2] = players;
-	const records: Record<string, number> = { null: 0, [player1]: 0, [player2]: 0 };
+	const records: Record<string, number> = {
+		null: 0,
+		[player1]: 0,
+		[player2]: 0
+	};
 
 	for (let i = 0; i < whoWin.length; i++) records[whoWin[i]] += 1;
 
@@ -75,7 +79,7 @@ export const getWinningPlayer = (
 		if (records[player1] > records[player2]) return { winnerId: player1, loserId: player2 };
 		return {
 			winnerId: player2,
-			loserId: player1,
+			loserId: player1
 		};
 	}
 

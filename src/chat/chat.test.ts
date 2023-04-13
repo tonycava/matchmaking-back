@@ -12,7 +12,7 @@ describe('Chat - Create', () => {
 
 		await request(app).post('/auth/register').send({
 			username: 'escaffre.lucas2003@gmail.com',
-			password: 'Root1234!',
+			password: 'Root1234!'
 		});
 	});
 

@@ -9,13 +9,13 @@ const router = express.Router();
 router.post(
 	'/login',
 	(req, res, next) => dtoValidation(next, req.body, authDTO),
-	AuthController.login,
+	AuthController.login
 );
 router.post(
 	'/register',
 	(req, res, next) => dtoValidation(next, req.body, authDTO),
 	checkIfUsernameIsAvailable,
-	AuthController.register,
+	AuthController.register
 );
 
 export default router;

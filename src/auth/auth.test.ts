@@ -12,7 +12,7 @@ describe('Auth - Register', () => {
 	it('should register a new user', async () => {
 		const result = await request(app).post('/auth/register').send({
 			username: 'escaffre.lucas2003@gmail.com',
-			password: 'Root1234!',
+			password: 'Root1234!'
 		});
 		expect(result.status).toBe(201);
 		expect(isAMLResultShaped(result.body)).toBe(true);
@@ -25,14 +25,14 @@ describe('Auth - Login', () => {
 	beforeAll(async () => {
 		await request(app).post('/auth/register').send({
 			username: 'escaffre.lucas2003@gmail.com',
-			password: 'Root1234!',
+			password: 'Root1234!'
 		});
 	});
 
 	it('should login a user', async () => {
 		const result = await request(app).post('/auth/login').send({
 			username: 'escaffre.lucas2003@gmail.com',
-			password: 'Root1234!',
+			password: 'Root1234!'
 		});
 		expect(result.status).toBe(200);
 		expect(isAMLResultShaped(result.body)).toBe(true);
@@ -43,7 +43,7 @@ describe('Auth - Login', () => {
 	it('should not login with non existing username', async () => {
 		const result = await request(app).post('/auth/login').send({
 			username: 'matis',
-			password: 'Root1234!',
+			password: 'Root1234!'
 		});
 		expect(result.status).toBe(404);
 		expect(isAMLResultShaped(result.body)).toBe(true);
@@ -52,7 +52,7 @@ describe('Auth - Login', () => {
 	it('should not login with wrong password', async () => {
 		const result = await request(app).post('/auth/login').send({
 			username: 'escaffre.lucas2003@gmail.com',
-			password: 'wrong password',
+			password: 'wrong password'
 		});
 		expect(result.status).toBe(401);
 		expect(isAMLResultShaped(result.body)).toBe(true);

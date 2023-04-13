@@ -46,7 +46,7 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 			userId: data.userId,
 			content: data.message,
 			createdAt: new Date(),
-			user: { username: chat.user.username },
+			user: { username: chat.user.username }
 		});
 	});
 
@@ -67,15 +67,15 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 					round: 1,
 					actualPlay: {
 						[partnerId]: 'rock',
-						[data.userId]: 'rock',
+						[data.userId]: 'rock'
 					},
 					timerPlay: 10,
 					timerRev: 5,
-					players: [partnerId, data.userId],
+					players: [partnerId, data.userId]
 				});
 				io.to([data.userId, partnerId]).emit(WEB_SOCKET_EVENT.PARTNER, {
 					users: [partner.userId, data.userId],
-					gameId,
+					gameId
 				});
 			} catch (error) {
 				console.error(error);

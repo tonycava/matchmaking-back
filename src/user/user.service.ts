@@ -10,7 +10,7 @@ type UserDTO = {
 };
 
 export const getUserInformationById = (
-	userId: string,
+	userId: string
 ): Promise<
 	UserDTO & {
 		chats: ChatService[];
@@ -27,8 +27,8 @@ export const getUserInformationById = (
 			_count: {
 				select: {
 					loserGames: true,
-					winnerGames: true,
-				},
+					winnerGames: true
+				}
 			},
 			chats: {
 				select: {
@@ -36,17 +36,17 @@ export const getUserInformationById = (
 					id: true,
 					content: true,
 					createdAt: true,
-					user: { select: { username: true } },
-				},
-			},
-		},
+					user: { select: { username: true } }
+				}
+			}
+		}
 	});
 };
 
 export const changeProfilePicture = (userId: string, profilePicture: string): Promise<User> => {
 	return prisma.user.update({
 		where: { id: userId },
-		data: { profilePicture },
+		data: { profilePicture }
 	});
 };
 
@@ -58,7 +58,7 @@ export const getChatsByUserId = (userId: string): Promise<ChatService[]> => {
 			content: true,
 			id: true,
 			userId: true,
-			user: { select: { username: true } },
-		},
+			user: { select: { username: true } }
+		}
 	});
 };

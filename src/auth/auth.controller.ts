@@ -8,12 +8,12 @@ import bcrypt from 'bcrypt';
 
 export const register = async (
 	req: AMLRequest<AuthDTO>,
-	res: AMLResponse,
+	res: AMLResponse
 ): Promise<Response<AMLResult>> => {
 	try {
 		const { username, id, createdAt } = await createUser(req.body);
 		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
-			expiresIn: '7d',
+			expiresIn: '7d'
 		});
 		return res.status(201).json(new AMLResult('User created', 201, { token }));
 	} catch (error) {
@@ -24,7 +24,7 @@ export const register = async (
 const login = async (
 	req: AMLRequest<AuthDTO>,
 	res: AMLResponse,
-	next: NextFunction,
+	next: NextFunction
 ): Promise<Response<AMLResult> | void> => {
 	try {
 		const user = await getUserByUsername(req.body.username);
@@ -39,7 +39,7 @@ const login = async (
 
 		const { id, username, createdAt } = user;
 		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
-			expiresIn: '7d',
+			expiresIn: '7d'
 		});
 
 		if (!token) return next(new AMLResult('Unauthorized', 401));
@@ -51,5 +51,5 @@ const login = async (
 
 export default {
 	register,
-	login,
+	login
 };

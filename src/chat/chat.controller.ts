@@ -5,7 +5,7 @@ import { Range } from '../lib/dto';
 
 const getChat = async (
 	req: AMLRequest<never, Range>,
-	res: AMLResponse,
+	res: AMLResponse
 ): Promise<Response<AMLResult>> => {
 	const messages = await getMessages(req.query);
 	return res.send(new AMLResult('Chat.ts fetched', 200, { messages }));

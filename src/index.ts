@@ -30,7 +30,8 @@ app.use('/chat', chatRouter);
 app.use('/leaderboard', leaderboardRouter);
 app.use('/user', userRouter);
 
-app.get('/', (req: Request, res: Response) => res.send('Hello World!'));
+app.get('/', (req: Request, res: Response) => res.send('Hello World !!!'));
+app.get('/test', (req: Request, res: Response) => res.send({ message: 'test' }));
 
 app.use(errorHandlerMiddleware);
 

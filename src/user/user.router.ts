@@ -9,7 +9,7 @@ router.post(
 	'/upload-profile-picture',
 	(req, res, next) => dtoValidation(next, req.body, uploadProfilePictureDTO),
 	checkAuth,
-	UserController.uploadProfilePicture,
+	UserController.uploadProfilePicture
 );
 
 router.get('/', checkAuth, UserController.getInformations);

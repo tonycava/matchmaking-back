@@ -4,12 +4,12 @@ import { getTopTenWinners } from './leaderboard.service';
 
 export const getLeaderboard = async (
 	req: AMLRequest<never>,
-	res: AMLResponse,
+	res: AMLResponse
 ): Promise<Response<AMLResult>> => {
 	const winners = await getTopTenWinners();
 	return res.json(new AMLResult('Leaderboard', 200, { winners }));
 };
 
 export default {
-	getLeaderboard,
+	getLeaderboard
 };

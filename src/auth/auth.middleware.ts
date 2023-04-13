@@ -7,7 +7,7 @@ import { Response } from 'express';
 export const checkIfUsernameIsAvailable = async (
 	req: AMLRequest<AuthDTO>,
 	res: AMLResponse,
-	next: NextFunction,
+	next: NextFunction
 ): Promise<void | Response> => {
 	const { username } = req.body;
 	const user = await getUserByUsername(username);

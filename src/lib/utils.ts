@@ -1,8 +1,8 @@
 import type { CorsOptions } from 'cors';
 
 export const CORS_CONFIG: CorsOptions = {
-	origin: ['http://localhost:11001', 'https://aml.tonycava.dev'],
-	credentials: true,
+	origin: ['http://localhost:11001', 'https://aml.tonycava.dev', 'http://matchmaking-front.info'],
+	credentials: true
 };
 
 export enum WEB_SOCKET_EVENT {
@@ -14,5 +14,5 @@ export enum WEB_SOCKET_EVENT {
 	PLAY = 'play',
 	CHAT = 'chat',
 	NEW_MESSAGE = 'newMessage',
-	PARTNER = 'partner',
+	PARTNER = 'partner'
 }

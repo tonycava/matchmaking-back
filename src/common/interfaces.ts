@@ -7,5 +7,5 @@ export class AMLResult<D = Record<string, any>> {
 export type AMLRequest<Body, Query = null> = Request<any, AMLResult, Body, Query>;
 export type AMLResponse<
 	ResultPayload = Record<string, any>,
-	Locals extends Record<string, any> = Record<string, any>,
+	Locals extends Record<string, any> = Record<string, any>
 > = Response<AMLResult<ResultPayload>, Locals>;

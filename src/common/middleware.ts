@@ -13,7 +13,7 @@ export const dtoValidation = <T>(next: NextFunction, item: T, validator: ZodSche
 };
 
 export const checkToken = async (
-	token: string | undefined,
+	token: string | undefined
 ): Promise<[boolean, null | JwtPayload]> => {
 	if (!token) return [false, null];
 	try {
@@ -27,7 +27,7 @@ export const checkToken = async (
 export const checkAuth = async (
 	req: AMLRequest<any>,
 	res: AMLResponse,
-	next: NextFunction,
+	next: NextFunction
 ): Promise<Response<AMLResult> | void> => {
 	const [isValid, payload] = await checkToken(req.headers?.authorization);
 	if (isValid) {
