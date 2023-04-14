@@ -1,8 +1,9 @@
 FROM node:18.14.0 as deps
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-COPY prisma ./prisma
+COPY ./back/package.json ./back/yarn.lock ./
+COPY ./back/prisma ./prisma
+COPY ./shared ./shared
 
 RUN yarn install --frozen-lockfile
 
@@ -10,9 +11,9 @@ FROM node:18.14.0
 WORKDIR /app
 EXPOSE 3000
 
-COPY package.json yarn.lock ./
+COPY ./back/package.json ./back/yarn.lock ./
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY ./back/. .
 
 CMD ["yarn", "dev:docker"]

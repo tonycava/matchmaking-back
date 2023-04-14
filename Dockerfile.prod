@@ -4,13 +4,13 @@ WORKDIR /app
 
 RUN yarn global add typescript tsc
 
-COPY package.json ./
-COPY prisma ./prisma
+COPY ./back/package.json ./
+COPY ./back/prisma ./prisma
 
 
 RUN yarn install --production --frozen-lockfile
 
-COPY . .
+COPY ./back/. .
 
 RUN yarn build
 
