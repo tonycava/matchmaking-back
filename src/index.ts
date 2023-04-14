@@ -11,7 +11,7 @@ import leaderboardRouter from './leaderboard/leaderboard.router';
 import userRouter from './user/user.router';
 
 import { errorHandlerMiddleware } from './common/error.middleware';
-import { CORS_CONFIG } from './lib/utils';
+import { CORS_CONFIG } from './lib/config';
 
 dotenv.config();
 

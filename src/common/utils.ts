@@ -1,6 +1,18 @@
 import { SafeParseReturnType } from 'zod';
 import jwt from 'jsonwebtoken';
 
+export enum WEB_SOCKET_EVENT {
+	CONNECT = 'connect',
+	LEAVE_WAITING = 'leaveWaiting',
+	JOIN_GAME = 'joinGame',
+	JOIN_WAITING = 'joinWaiting',
+	UPDATE = 'update',
+	PLAY = 'play',
+	CHAT = 'chat',
+	NEW_MESSAGE = 'newMessage',
+	PARTNER = 'partner'
+}
+
 export const formatZodParseResponse = <Input = any, Output = any>(
 	error: SafeParseReturnType<Input, Output>
 ): string[] => {
