@@ -1,7 +1,7 @@
 import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
 import { getMessages } from './chat.service';
 import { Response } from 'express';
-import { Range } from '../lib/dto';
+import { Range } from 'matchmaking-shared';
 
 const getChat = async (
 	req: AMLRequest<never, Range>,

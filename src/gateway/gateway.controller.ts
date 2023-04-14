@@ -2,9 +2,9 @@ import { io } from '../index';
 import crypto from 'crypto';
 import { createGame, updateGame } from './gateway.service';
 import { createChat } from '../chat/chat.service';
-import { ChatDTO, Game, PlayDTO, Waiter } from './dto';
+import { ChatDTO, PlayDTO, Waiter } from './dto';
 import { buildNewGame, getWinningPlayer } from './game.logic';
-import { WEB_SOCKET_EVENT } from '../common/utils';
+import { type Game, WEB_SOCKET_EVENT } from 'matchmaking-shared';
 
 const waiters = new Map<string, Waiter>([]);
 const games = new Map<string, Game>([]);

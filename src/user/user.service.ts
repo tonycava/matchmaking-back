@@ -1,6 +1,6 @@
 import prisma from '../lib/db';
 import type { User } from '@prisma/client';
-import { ChatService } from '../chat/chat.service';
+import { Chat } from 'matchmaking-shared';
 
 type UserDTO = {
 	id: string;
@@ -13,7 +13,7 @@ export const getUserInformationById = (
 	userId: string
 ): Promise<
 	UserDTO & {
-		chats: ChatService[];
+		chats: Chat[];
 		_count: { loserGames: number; winnerGames: number };
 	}
 > => {
@@ -50,7 +50,7 @@ export const changeProfilePicture = (userId: string, profilePicture: string): Pr
 	});
 };
 
-export const getChatsByUserId = (userId: string): Promise<ChatService[]> => {
+export const getChatsByUserId = (userId: string): Promise<Chat[]> => {
 	return prisma.chat.findMany({
 		where: { userId },
 		select: {

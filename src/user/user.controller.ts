@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
 import { changeProfilePicture, getUserInformationById } from './user.service';
 import { LocalsDTO, UploadProfilePictureDTO } from '../lib/dto';
-import { ChatService } from '../chat/chat.service';
+import { Chat } from 'matchmaking-shared';
 
 const getInformations = async (
 	req: AMLRequest<never>,
@@ -14,7 +14,7 @@ const getInformations = async (
 				username: string;
 				createdAt: Date;
 			};
-			chats: ChatService[];
+			chats: Chat[];
 		},
 		LocalsDTO
 	>,
@@ -27,7 +27,7 @@ const getInformations = async (
 			username: string;
 			createdAt: Date;
 		};
-		chats: ChatService[];
+		chats: Chat[];
 	}>,
 	LocalsDTO
 >> => {

@@ -20,8 +20,3 @@ export type LocalsDTO = {
 export type UploadProfilePictureDTO = z.infer<typeof uploadProfilePictureDTO>;
 
 export type AuthDTO = z.infer<typeof authDTO>;
-
-export type Range = {
-	start: string;
-	end: string;
-};

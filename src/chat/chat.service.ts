@@ -1,10 +1,8 @@
 import prisma from '../lib/db';
-import { Chat } from '@prisma/client';
-import { Range } from '../lib/dto';
+import { Chat, Range } from 'matchmaking-shared';
 
-export type ChatService = Chat & { user: { username: string } };
 
-export const getMessages = ({ start, end }: Range): Promise<ChatService[]> => {
+export const getMessages = ({ start, end }: Range): Promise<Chat[]> => {
 	return prisma.chat.findMany({
 		skip: +start,
 		take: +end - +start,
@@ -19,7 +17,7 @@ export const getMessages = ({ start, end }: Range): Promise<ChatService[]> => {
 	});
 };
 
-export const createChat = async (content: string, userId: string): Promise<ChatService> => {
+export const createChat = async (content: string, userId: string): Promise<Chat> => {
 	return prisma.chat.create({
 		select: {
 			content: true,

@@ -1,4 +1,5 @@
-import { Game, Move, Some, WhoWin } from './dto';
+import { WhoWin } from './dto';
+import type { Game, Move, Some } from 'matchmaking-shared';
 
 export const whoWin = (player1Move: Move, player2Move: Move): WhoWin | null => {
 	if (player1Move === player2Move) return null;
@@ -38,7 +39,10 @@ export const buildNewGame = (game: Game): Game => {
 	}
 
 	if (newTimerPlay === 0 && game.round !== 4) {
-		const who = whoWin(game.actualPlay[game.players[0]], game.actualPlay[game.players[1]]);
+		const who = whoWin(
+			game.actualPlay[game.players[0]] as Move,
+			game.actualPlay[game.players[1]] as Move
+		);
 
 		if (who === 'player1') game.whoWin[game.round - 1] = game.players[0];
 		if (who === 'player2') game.whoWin[game.round - 1] = game.players[1];

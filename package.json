@@ -17,6 +17,7 @@
     "prestart": "npx prisma db push"
   },
   "dependencies": {
+    "matchmaking-shared": "file:/app/shared",
     "@prisma/client": "^4.11.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
