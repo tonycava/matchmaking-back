@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: matchmaking-back-ingress
+spec:
+  rules:
+    - host: matchmaking-backend.info
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: matchmaking-backend-k8s
+                port:
+                  number: 3000

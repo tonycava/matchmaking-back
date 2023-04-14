@@ -1,0 +1,22 @@
+FROM node:18.14.0 as deps
+WORKDIR /app
+
+
+COPY ./backend/package.json ./backend/yarn.lock ./
+COPY ./backend/prisma ./prisma
+COPY ./shared ./shared
+
+RUN sed -i -e 's/:..\/shared/:\/app\/shared/g' package.json
+
+RUN yarn install
+
+
+FROM node:18.14.0
+WORKDIR /app
+EXPOSE 3000
+
+COPY --from=deps /app/node_modules ./node_modules
+
+COPY ./backend .
+
+CMD ["yarn", "dev:docker"]
