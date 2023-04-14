@@ -1,7 +1,6 @@
 import prisma from '../lib/db';
 import { Chat, Range } from 'matchmaking-shared';
 
-
 export const getMessages = ({ start, end }: Range): Promise<Chat[]> => {
 	return prisma.chat.findMany({
 		skip: +start,
