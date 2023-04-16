@@ -73,12 +73,12 @@ yarn run dev
 
 Open your browser and navigate to localhost:3000 to see your app in action.
 
-## 🏗 Step 4: Build the App for Production 🐳
+## 🏗 Step 4: Launch the App for Devlopment 🐳
 
 To create a production-ready build of your app, run the following command:
 
 ```bash
-docker build -f Dockerfile.prod -t <your-image-name> .
+docker-compose -f docker-compose.dev.yml up --build -d
 ```
 
 ## :sunglasses: Step 5: Launch the App for Production 🐳
@@ -86,7 +86,7 @@ docker build -f Dockerfile.prod -t <your-image-name> .
 To create a production-ready build of your app, run the following command:
 
 ```bash
-docker run -p 3000:3000 -d <your-image-name>
+docker-compose -f docker-compose.prod.yml up --build -d
 ```
 
 ## 📝 Deploy to kubernetes
