@@ -2,8 +2,8 @@ FROM node:18.14.0 as deps
 WORKDIR /app
 
 
-COPY ./back/package.json ./back/yarn.lock ./
-COPY ./back/prisma ./prisma
+COPY ./backend/package.json ./backend/yarn.lock ./
+COPY ./backend/prisma ./prisma
 COPY ./shared ./shared
 
 RUN sed -i -e 's/:..\/shared/:\/app\/shared/g' package.json
@@ -17,6 +17,6 @@ EXPOSE 3000
 
 COPY --from=deps /app/node_modules ./node_modules
 
-COPY ./back .
+COPY ./backend .
 
 CMD ["yarn", "dev:docker"]
