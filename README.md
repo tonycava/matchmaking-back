@@ -53,7 +53,12 @@ https://kubernetes.io/docs/tasks/tools/
 
 <hr>
 
-## 📦 Step 1: Install Dependencies
+## :pencil2: Step 1: Fill the env variable
+```bash
+ cp .env.example .env
+```
+
+## 📦 Step 2: Install Dependencies
 
 Install all the necessary dependencies for your project by running the following command:
 
@@ -61,7 +66,7 @@ Install all the necessary dependencies for your project by running the following
 yarn install
 ```
 
-## 🚀 Step 2: Launch the Development Server
+## 🚀 Step 3: Launch the Development Server
 
 Start the development server by executing the following command:
 
@@ -69,11 +74,11 @@ Start the development server by executing the following command:
 yarn run dev
 ```
 
-## 🌐 Step 3: Access the App in Your Browser
+## 🌐 Step 4: Access the App in Your Browser
 
 Open your browser and navigate to localhost:3000 to see your app in action.
 
-## 🏗 Step 4: Launch the App for Devlopment 🐳
+## 🏗 Step 5: Launch the App for Development 🐳
 
 To create a production-ready build of your app, run the following command:
 
@@ -81,7 +86,7 @@ To create a production-ready build of your app, run the following command:
 docker-compose -f docker-compose.dev.yml up --build -d
 ```
 
-## :sunglasses: Step 5: Launch the App for Production 🐳
+## :sunglasses: Step 6: Launch the App for Production 🐳
 
 To create a production-ready build of your app, run the following command:
 
