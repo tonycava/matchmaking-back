@@ -11,6 +11,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - matchmaking-vol:/var/lib/postgresql/data
+      - ../init-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
     ports:
       - "11000:5432"
   app:
