@@ -18,7 +18,7 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile.prod
-    container_name: uis-app
+    container_name: matchmaking-back
     restart: always
     ports:
       - "8080:${PORT}"
