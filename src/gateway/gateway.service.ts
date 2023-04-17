@@ -9,9 +9,10 @@ export const createGame = async (gameId: string): Promise<Game> => {
 
 export const updateGame = async (
 	gameId: string,
-	{ winnerId, loserId }: Pick<Game, 'winnerId' | 'loserId'> | null
+	game: Pick<Game, 'winnerId' | 'loserId'> | null
 ): Promise<Game> => {
-	if (!winnerId || !loserId) return;
+	if (!game?.winnerId || !game?.loserId) return;
+	const { winnerId, loserId } = game;
 	return prisma.game.update({
 		where: { id: gameId },
 		data: { winnerId, loserId }
