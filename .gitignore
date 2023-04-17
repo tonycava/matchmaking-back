@@ -1,5 +1,5 @@
 .idea
 node_modules
-env.yml
+k8s/env.yml
 .env
 dist

@@ -14,6 +14,10 @@ kind: Deployment
 metadata:
   name: matchmaking-db-k8s
 spec:
+  volumes:
+    - name: matchmaking-vol
+      hostPath:
+        path: /volumes/matchmaking-db
   selector:
     matchLabels:
       app: matchmaking-db-k8s
@@ -26,6 +30,9 @@ spec:
       containers:
         - name: matchmaking-db-k8s
           image: postgres:12.2-alpine
+          volumeMounts:
+            - name: matchmaking-vol
+              mountPath: /var/lib/postgresql/data
           envFrom:
             - configMapRef:
                 name: matchmaking-back-config
