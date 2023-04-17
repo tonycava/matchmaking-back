@@ -29,12 +29,12 @@ const login = async (
 	try {
 		const user = await getUserByUsername(req.body.username);
 		if (!user) {
-			return next(new AMLResult("User doesn't exist", 404));
+			return next(new AMLResult('Invalid credentials', 404));
 		}
 
 		const isPasswordValid = await bcrypt.compare(req.body.password, user.hashedPassword);
 		if (!isPasswordValid) {
-			return next(new AMLResult('Invalid password', 401));
+			return next(new AMLResult('Invalid credentials', 401));
 		}
 
 		const { id, username, createdAt } = user;
