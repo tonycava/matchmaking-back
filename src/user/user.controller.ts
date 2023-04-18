@@ -38,20 +38,43 @@ const getInformations = async (
 		profilePicture,
 		id,
 		username,
+		private: isAccountPrivate,
+		loserGames,
 		createdAt,
+		followers,
+		followed,
 		chats,
-		_count: { loserGames, winnerGames }
+		winnerGames,
+		_count: {
+			loserGames: numberOfLoses,
+			winnerGames: numberOfWins,
+			followers: followersCount,
+			followed: followedCount
+		}
 	} = await getUserInformationById(userid);
 
+	const games = [...winnerGames, ...loserGames]
+		.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+		.map((game) => ({
+			...game,
+			result: game.winnerId === userid ? 'win' : 'loose'
+		}));
+
 	return res.json(
-		new AMLResult('Profile picture retrieved successfully', 200, {
+		new AMLResult('User information retrieved successfully', 200, {
 			user: {
 				id,
 				username,
 				createdAt,
 				profilePicture,
-				numberOfWins: winnerGames,
-				numberOfLoses: loserGames
+				isAccountPrivate,
+				numberOfWins,
+				numberOfLoses,
+				followedCount: followersCount,
+				followersCount: followedCount,
+				followed: followers,
+				followers: followed,
+				games
 			},
 			chats
 		})
