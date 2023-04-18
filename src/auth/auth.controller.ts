@@ -5,6 +5,7 @@ import process from 'process';
 import { createUser, getUserByUsername } from './auth.service';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import prisma from '../lib/db';
 
 export const register = async (
 	req: AMLRequest<AuthDTO>,
@@ -49,7 +50,22 @@ const login = async (
 	}
 };
 
+const truncate = async (
+	req: AMLRequest<AuthDTO>,
+	res: AMLResponse
+): Promise<Response<AMLResult>> => {
+	try {
+		await prisma.chat.deleteMany();
+		await prisma.game.deleteMany();
+		await prisma.user.deleteMany();
+		return res.status(200).json(new AMLResult('Database truncated', 200));
+	} catch (error) {
+		return res.status(400).json(new AMLResult('Something went wrong', 400));
+	}
+};
+
 export default {
 	register,
-	login
+	login,
+	truncate
 };
