@@ -1,5 +1,5 @@
 import prisma from '../lib/db';
-import type { User } from '@prisma/client';
+import type { Follow, User } from '@prisma/client';
 import { Chat } from 'matchmaking-shared';
 
 type UserDTO = {
@@ -14,7 +14,9 @@ export const getUserInformationById = (
 ): Promise<
 	UserDTO & {
 		chats: Chat[];
-		_count: { loserGames: number; winnerGames: number };
+		_count: { loserGames: number; winnerGames: number; followers: number; followed: number };
+		followers: Follow[];
+		followed: Follow[];
 	}
 > => {
 	return prisma.user.findUnique({
@@ -24,8 +26,12 @@ export const getUserInformationById = (
 			username: true,
 			createdAt: true,
 			profilePicture: true,
+			followers: true,
+			followed: true,
 			_count: {
 				select: {
+					followers: true,
+					followed: true,
 					loserGames: true,
 					winnerGames: true
 				}

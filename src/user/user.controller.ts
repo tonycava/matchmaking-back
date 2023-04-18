@@ -39,19 +39,30 @@ const getInformations = async (
 		id,
 		username,
 		createdAt,
+		followers,
+		followed,
 		chats,
-		_count: { loserGames, winnerGames }
+		_count: {
+			loserGames: numberOfLoses,
+			winnerGames: numberOfWins,
+			followers: followersCount,
+			followed: followedCount
+		}
 	} = await getUserInformationById(userid);
 
 	return res.json(
-		new AMLResult('Profile picture retrieved successfully', 200, {
+		new AMLResult('User information retrieved successfully', 200, {
 			user: {
 				id,
 				username,
 				createdAt,
 				profilePicture,
-				numberOfWins: winnerGames,
-				numberOfLoses: loserGames
+				numberOfWins,
+				numberOfLoses,
+				followedCount: followersCount,
+				followersCount: followedCount,
+				followed: followers,
+				followers: followed
 			},
 			chats
 		})
