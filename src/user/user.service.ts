@@ -1,5 +1,5 @@
 import prisma from '../lib/db';
-import type { Follow, User } from '@prisma/client';
+import type { Follow, Game, User } from '@prisma/client';
 import { Chat } from 'matchmaking-shared';
 
 type UserDTO = {
@@ -16,6 +16,9 @@ export const getUserInformationById = (
 		chats: Chat[];
 		_count: { loserGames: number; winnerGames: number; followers: number; followed: number };
 		followers: Follow[];
+		loserGames: Game[];
+		winnerGames: Game[];
+		private: boolean;
 		followed: Follow[];
 	}
 > => {
@@ -23,10 +26,13 @@ export const getUserInformationById = (
 		where: { id: userId },
 		select: {
 			id: true,
+			private: true,
 			username: true,
 			createdAt: true,
 			profilePicture: true,
+			winnerGames: true,
 			followers: true,
+			loserGames: true,
 			followed: true,
 			_count: {
 				select: {

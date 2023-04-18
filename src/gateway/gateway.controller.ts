@@ -12,8 +12,20 @@ const games = new Map<string, Game>([]);
 setInterval(async () => {
 	for (const [gameId, game] of games) {
 		if (game.state === 'finished') {
+			const winningPlayer = getWinningPlayer(game.whoWin, game.players);
+			if (winningPlayer) {
+				const toEmit = {
+					id: gameId,
+					winnerId: winningPlayer.winnerId,
+					loserId: winningPlayer.loserId,
+					result: winningPlayer.winnerId,
+					createdAt: new Date()
+				};
+				io.emit(`user/${winningPlayer.winnerId}`, toEmit);
+				io.emit(`user/${winningPlayer.loserId}`, toEmit);
+			}
+			await updateGame(gameId, winningPlayer);
 			games.delete(gameId);
-			await updateGame(gameId, getWinningPlayer(game.whoWin, game.players));
 			continue;
 		}
 		const newGame = buildNewGame(game);
