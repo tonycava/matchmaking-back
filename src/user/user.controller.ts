@@ -2,6 +2,7 @@ import { NextFunction, Response } from 'express';
 import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
 import {
 	changeProfilePicture,
+	changeRole,
 	changeStatus,
 	getUserInformationById,
 	isAccountFollowingMe,
@@ -48,6 +49,7 @@ const getInformations = async (
 		private: isAccountPrivate,
 		loserGames,
 		createdAt,
+		role,
 		followers,
 		followed,
 		chats,
@@ -74,6 +76,7 @@ const getInformations = async (
 		new AMLResult('User information retrieved successfully', 200, {
 			user: {
 				id,
+				role,
 				username,
 				createdAt,
 				profilePicture,
@@ -117,8 +120,17 @@ const updateStatus = async (
 	return res.json(new AMLResult('Status updated successfully', 200, { status }));
 };
 
+const promote = async (
+	req: AMLRequest<UpdateStatusDTO>,
+	res: AMLResponse<null, LocalsDTO>
+): Promise<Response<AMLResult<null>>> => {
+	await changeRole(res.locals.user.id, 'ADMIN');
+	return res.json(new AMLResult('Role updated successfully', 200));
+};
+
 export default {
 	getInformations,
 	uploadProfilePicture,
-	updateStatus
+	updateStatus,
+	promote
 };

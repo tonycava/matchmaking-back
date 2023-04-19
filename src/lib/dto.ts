@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Role } from '@prisma/client';
 
 export const authDTO = z.object({
 	username: z.string().min(1, { message: 'Username is required' }),
@@ -45,6 +46,12 @@ export const removeWaitingApplication = z.object({
 	userIdToUnWait: z.string().min(1, { message: 'User ID to unwait is required' })
 });
 
+export const promoteDTO = z.object({
+	userIdToPromote: z.string().min(1, { message: 'User ID is required' })
+});
+
+export type PromoteDTO = z.infer<typeof promoteDTO>;
+
 export type RemoveWaitingApplicationDTO = z.infer<typeof removeWaitingApplication>;
 
 export type AddFollowDTO = z.infer<typeof addFollowDTO>;
@@ -55,6 +62,7 @@ export type LocalsDTO = {
 		id: string;
 		username: string;
 		createdAt: Date;
+		role: Role;
 	};
 };
 

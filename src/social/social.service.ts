@@ -21,8 +21,30 @@ export const unFollowSomeone = (idToUnfollow: string, userId: string): Promise<F
 	});
 };
 
-export const addNewApplication = (userIdToApply: string, userId: string): Promise<Application> => {
+export const addNewApplication = (
+	userIdToApply: string,
+	userId: string
+): Promise<
+	Application & {
+		userToFollow: {
+			username: string;
+			profilePicture: string;
+		};
+}
+> => {
 	return prisma.application.create({
+		select: {
+			id: true,
+			createdAt: true,
+			userIdToFollow: true,
+			userIdWhoFollow: true,
+			userToFollow: {
+				select: {
+					username: true,
+					profilePicture: true
+				}
+			}
+		},
 		data: {
 			userWhoFollow: {
 				connect: {

@@ -1,20 +1,18 @@
 import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
 import { AuthDTO } from '../lib/dto';
 import { NextFunction, Response } from 'express';
-import process from 'process';
 import { createUser, getUserByUsername } from './auth.service';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { signToken } from '../common/utils';
 
 export const register = async (
 	req: AMLRequest<AuthDTO>,
 	res: AMLResponse
 ): Promise<Response<AMLResult>> => {
 	try {
-		const { username, id, createdAt } = await createUser(req.body);
-		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
-			expiresIn: '7d'
-		});
+		const { username, id, createdAt, role } = await createUser(req.body);
+		const token = signToken({ id, username, createdAt, role });
+
 		return res.status(201).json(new AMLResult('User created', 201, { token }));
 	} catch (error) {
 		return res.status(201).json(new AMLResult('Something went wrong', 400));
@@ -37,10 +35,8 @@ const login = async (
 			return next(new AMLResult('Invalid credentials', 401));
 		}
 
-		const { id, username, createdAt } = user;
-		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
-			expiresIn: '7d'
-		});
+		const { id, username, createdAt, role } = user;
+		const token = signToken({ id, username, createdAt, role });
 
 		if (!token) return next(new AMLResult('Unauthorized', 401));
 		return res.json(new AMLResult('User logged in', 200, { token }));

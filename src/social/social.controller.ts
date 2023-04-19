@@ -42,7 +42,7 @@ const removeFollow = async (
 	if (userIdToUnFollow === id) return res.send(new AMLResult('You cannot unfollow yourself', 400));
 
 	const unfollow = await unFollowSomeone(userIdToUnFollow, id);
-
+	io.emit(`user/remove-follow/${userIdToUnFollow}`, res.locals.user.id);
 	return res.send(new AMLResult('OK', 200, { unfollow }));
 };
 
@@ -56,6 +56,15 @@ const addApplication = async (
 	if (userIdToApply === userId) return res.send(new AMLResult('Cannot add yourself', 200));
 
 	const application = await addNewApplication(userIdToApply, userId);
+	io.emit(`user/demand/${userIdToApply}`, {
+		id: application.id,
+		userToFollow: {
+			id: application.userIdToFollow,
+			createdAt: application.createdAt,
+			profilePicture: application.userToFollow.profilePicture,
+			username: application.userToFollow.username
+		}
+	});
 	return res.send(new AMLResult('OK', 200, { application }));
 };
 
@@ -65,6 +74,7 @@ const removeApplication = async (
 ): Promise<Response<AMLResult<{ application: Application }>>> => {
 	const { applicationIdToUnApply } = req.body;
 	const application = await removeApplicationById(applicationIdToUnApply);
+	io.emit(`user/demand/reject/${application.userIdWhoFollow}/${application.userIdToFollow}`);
 	return res.send(new AMLResult('OK', 200, { application }));
 };
 
@@ -75,7 +85,8 @@ const acceptApplication = async (
 	const { applicationIdToApply, userIdToFollow } = req.body;
 	const application = await removeApplicationById(applicationIdToApply);
 	const follow = await startFollowSomeone(res.locals.user.id, userIdToFollow);
-	io.emit(`user/new-follow/${res.locals.user.id}`, follow);
+	io.emit(`user/new-follow/${follow.followerId}`, follow);
+	io.emit(`user/demand/accept/${follow.followerId}/${follow.followedId}`);
 	return res.send(new AMLResult('OK', 200, { application, follow }));
 };
 
@@ -86,6 +97,7 @@ const removeWaitingApplication = async (
 	const { userIdToUnWait } = req.body;
 	const application = await getApplicationById(res.locals.user.id, userIdToUnWait);
 	const deletedApplication = await removeWaitingApplicationById(application.id);
+	io.emit(`user/demand/remove/${userIdToUnWait}`, deletedApplication.id);
 	return res.send(new AMLResult('OK', 200, { deletedApplication }));
 };
 

@@ -1,7 +1,8 @@
 import express from 'express';
 import { checkAuth, dtoValidation } from '../common/middleware';
 import UserController from './user.controller';
-import { updateStatusDTO, uploadProfilePictureDTO } from '../lib/dto';
+import { promoteDTO, updateStatusDTO, uploadProfilePictureDTO } from '../lib/dto';
+import { isTokenSignWithAdmin } from './user.middleware';
 
 const router = express.Router();
 
@@ -10,6 +11,14 @@ router.post(
 	(req, res, next) => dtoValidation(next, req.body, uploadProfilePictureDTO),
 	checkAuth,
 	UserController.uploadProfilePicture
+);
+
+router.post(
+	'/promote',
+	(req, res, next) => dtoValidation(next, req.body, promoteDTO),
+	checkAuth,
+	isTokenSignWithAdmin,
+	UserController.promote
 );
 
 router.get('/', checkAuth, UserController.getInformations);

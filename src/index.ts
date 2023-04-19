@@ -20,8 +20,8 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
 export const io = new Server(server, { cors: CORS_CONFIG });
-
 import './gateway/gateway.controller';
+
 
 app.use(express.json());
 app.use(cors(CORS_CONFIG));
@@ -32,7 +32,7 @@ app.use('/leaderboard', leaderboardRouter);
 app.use('/user', userRouter);
 app.use('/social', socialRouter);
 
-app.get('/', (req: Request, res: Response) => res.send('Hello World !!!'));
+app.get('/', (req: Request, res: Response) => res.send('Hello World !'));
 
 app.use(errorHandlerMiddleware);
 

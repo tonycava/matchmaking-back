@@ -1,5 +1,6 @@
 import { SafeParseReturnType } from 'zod';
 import jwt from 'jsonwebtoken';
+import { Role } from '@prisma/client';
 
 export enum WEB_SOCKET_EVENT {
 	CONNECT = 'connect',
@@ -28,8 +29,10 @@ export const formatZodParseResponseOneLine = <Input = any, Output = any>(
 	return formatZodParseResponse(error).join(separator);
 };
 
-export const signToken = (id: string, username: string, createdAt: Date): string => {
-	return jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
+type JwtPayLoad = { id: string; username: string; role: Role; createdAt: Date };
+
+export const signToken = ({ id, username, createdAt, role }: JwtPayLoad): string => {
+	return jwt.sign({ id, username, createdAt, role }, process.env.JWT_SECRET ?? '', {
 		expiresIn: '7d'
 	});
 };

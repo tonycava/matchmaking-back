@@ -16,6 +16,7 @@ model User {
   username       String   @unique
   profilePicture String?
   hashedPassword String
+  role           Role     @default(USER)
   private        Boolean  @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -63,4 +64,9 @@ model Application {
   userIdToFollow  String
   userWhoFollow   User     @relation("whoFollow", fields: [userIdWhoFollow], references: [id])
   userIdWhoFollow String
+}
+
+enum Role {
+  ADMIN
+  USER
 }

@@ -1,7 +1,12 @@
 import express from 'express';
 import { checkAuth, dtoValidation } from '../common/middleware';
 import SocialController from './social.controller';
-import { acceptApplicationDTO, addApplicationDTO, removeApplicationDTO, removeWaitingApplication } from '../lib/dto';
+import {
+	acceptApplicationDTO,
+	addApplicationDTO,
+	removeApplicationDTO,
+	removeWaitingApplication
+} from '../lib/dto';
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
 import prisma from '../lib/db';
-import type { Application, Follow, Game, User } from '@prisma/client';
+import type { Application, Follow, Game, Role, User } from '@prisma/client';
 import { Chat } from 'matchmaking-shared';
 
 type UserDTO = {
@@ -39,6 +39,7 @@ export const getUserInformationById = (
 		chats: Chat[];
 		_count: { loserGames: number; winnerGames: number; followers: number; followed: number };
 		followers: Follow[];
+		role: Role;
 		loserGames: Game[];
 		winnerGames: Game[];
 		private: boolean;
@@ -51,6 +52,7 @@ export const getUserInformationById = (
 		select: {
 			id: true,
 			private: true,
+			role: true,
 			username: true,
 			whoFollow: {
 				select: {
@@ -85,7 +87,7 @@ export const getUserInformationById = (
 					id: true,
 					content: true,
 					createdAt: true,
-					user: { select: { username: true } }
+					user: { select: { username: true, role: true } }
 				}
 			}
 		}
@@ -103,5 +105,16 @@ export const changeStatus = (userId: string, status: boolean): Promise<User> => 
 	return prisma.user.update({
 		where: { id: userId },
 		data: { private: status }
+	});
+};
+
+export const changeRole = (userId: string, role: Role): Promise<User> => {
+	return prisma.user.update({
+		where: {
+			id: userId
+		},
+		data: {
+			role
+		}
 	});
 };
