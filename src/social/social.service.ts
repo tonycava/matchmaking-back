@@ -30,7 +30,7 @@ export const addNewApplication = (
 			username: string;
 			profilePicture: string;
 		};
-}
+	}
 > => {
 	return prisma.application.create({
 		select: {
