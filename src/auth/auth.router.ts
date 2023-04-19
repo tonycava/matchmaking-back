@@ -18,4 +18,6 @@ router.post(
 	AuthController.register
 );
 
+router.delete('/truncate', AuthController.truncate);
+
 export default router;

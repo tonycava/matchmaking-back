@@ -17,3 +17,9 @@ export const createUser = async (body: AuthDTO): Promise<User> => {
 		}
 	});
 };
+
+export const truncateUser = async (): Promise<void> => {
+	await prisma.chat.deleteMany();
+	await prisma.game.deleteMany();
+	await prisma.user.deleteMany();
+};

@@ -2,7 +2,7 @@ import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
 import { AuthDTO } from '../lib/dto';
 import { NextFunction, Response } from 'express';
 import process from 'process';
-import { createUser, getUserByUsername } from './auth.service';
+import {createUser, getUserByUsername, truncateUser} from './auth.service';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -49,7 +49,23 @@ const login = async (
 	}
 };
 
+const truncate = async (
+	req: AMLRequest<AuthDTO>,
+	res: AMLResponse,
+	next: NextFunction
+): Promise<Response<AMLResult> | void> => {
+	try {
+		console.log('Truncating database...');
+		await truncateUser();
+		console.log('Database truncated');
+		return res.json(new AMLResult('Database truncated', 200));
+	} catch (error: any) {
+		return next(new AMLResult(error.message ?? 'Something went wrong', 400));
+	}
+};
+
 export default {
 	register,
-	login
+	login,
+	truncate
 };
