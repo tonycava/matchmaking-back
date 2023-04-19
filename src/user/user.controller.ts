@@ -1,7 +1,13 @@
 import { NextFunction, Response } from 'express';
 import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
-import { changeProfilePicture, getUserInformationById } from './user.service';
-import { LocalsDTO, UploadProfilePictureDTO } from '../lib/dto';
+import {
+	changeProfilePicture,
+	changeStatus,
+	getUserInformationById,
+	isAccountFollowingMe,
+	isAccountInApplication
+} from './user.service';
+import { LocalsDTO, UpdateStatusDTO, UploadProfilePictureDTO } from '../lib/dto';
 import { Chat } from 'matchmaking-shared';
 
 const getInformations = async (
@@ -38,6 +44,7 @@ const getInformations = async (
 		profilePicture,
 		id,
 		username,
+		whoFollow,
 		private: isAccountPrivate,
 		loserGames,
 		createdAt,
@@ -52,6 +59,9 @@ const getInformations = async (
 			followed: followedCount
 		}
 	} = await getUserInformationById(userid);
+
+	const haveAccess = !!(await isAccountFollowingMe(res.locals.user.id, userid));
+	const isAlreadyApplicating = !!(await isAccountInApplication(userid, res.locals.user.id));
 
 	const games = [...winnerGames, ...loserGames]
 		.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -68,13 +78,16 @@ const getInformations = async (
 				createdAt,
 				profilePicture,
 				isAccountPrivate,
+				isAlreadyApplicating,
+				whoFollow,
 				numberOfWins,
 				numberOfLoses,
-				followedCount: followersCount,
-				followersCount: followedCount,
-				followed: followers,
-				followers: followed,
-				games
+				followersCount,
+				followedCount,
+				followers,
+				followed,
+				games,
+				haveAccess
 			},
 			chats
 		})
@@ -95,7 +108,17 @@ const uploadProfilePicture = async (
 		})
 	);
 };
+
+const updateStatus = async (
+	req: AMLRequest<UpdateStatusDTO>,
+	res: AMLResponse<{ status: boolean }, LocalsDTO>
+): Promise<Response<AMLResult<{ status: boolean }>>> => {
+	const { private: status } = await changeStatus(res.locals.user.id, req.body.status);
+	return res.json(new AMLResult('Status updated successfully', 200, { status }));
+};
+
 export default {
 	getInformations,
-	uploadProfilePicture
+	uploadProfilePicture,
+	updateStatus
 };

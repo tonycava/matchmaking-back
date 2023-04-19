@@ -1,5 +1,5 @@
 import prisma from '../lib/db';
-import type { Follow, Game, User } from '@prisma/client';
+import type { Application, Follow, Game, User } from '@prisma/client';
 import { Chat } from 'matchmaking-shared';
 
 type UserDTO = {
@@ -7,6 +7,29 @@ type UserDTO = {
 	username: string;
 	createdAt: Date;
 	profilePicture: string | null;
+};
+
+export const isAccountFollowingMe = (myId: string, otherId: string): Promise<Follow> => {
+	return prisma.follow.findUnique({
+		where: {
+			followedId_followerId: {
+				followerId: otherId,
+				followedId: myId
+			}
+		}
+	});
+};
+
+export const isAccountInApplication = (
+	userIdToDemand: string,
+	userId: string
+): Promise<Application | null> => {
+	return prisma.application.findFirst({
+		where: {
+			userIdToFollow: userId,
+			userIdWhoFollow: userIdToDemand
+		}
+	});
 };
 
 export const getUserInformationById = (
@@ -19,6 +42,7 @@ export const getUserInformationById = (
 		loserGames: Game[];
 		winnerGames: Game[];
 		private: boolean;
+		whoFollow: { id: string; userToFollow: UserDTO }[];
 		followed: Follow[];
 	}
 > => {
@@ -28,6 +52,19 @@ export const getUserInformationById = (
 			id: true,
 			private: true,
 			username: true,
+			whoFollow: {
+				select: {
+					id: true,
+					userToFollow: {
+						select: {
+							id: true,
+							username: true,
+							createdAt: true,
+							profilePicture: true
+						}
+					}
+				}
+			},
 			createdAt: true,
 			profilePicture: true,
 			winnerGames: true,
@@ -62,15 +99,9 @@ export const changeProfilePicture = (userId: string, profilePicture: string): Pr
 	});
 };
 
-export const getChatsByUserId = (userId: string): Promise<Chat[]> => {
-	return prisma.chat.findMany({
-		where: { userId },
-		select: {
-			createdAt: true,
-			content: true,
-			id: true,
-			userId: true,
-			user: { select: { username: true } }
-		}
+export const changeStatus = (userId: string, status: boolean): Promise<User> => {
+	return prisma.user.update({
+		where: { id: userId },
+		data: { private: status }
 	});
 };
