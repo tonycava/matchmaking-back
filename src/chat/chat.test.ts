@@ -34,7 +34,9 @@ describe('Chat - Get', () => {
 		// Given
 		const userData = await prisma.user.findFirst()!;
 		if (!userData) throw new Error('User not found');
-		const token = signToken(userData?.id, userData.username, userData.createdAt);
+		const token = signToken({
+			id: userData?.id, username: userData.username, createdAt: userData.createdAt, role: userData.role
+		});
 		await createChat('Hello World', userData.id);
 		// When
 		const result = await request(app).get('/chat?start=0&end=1').set('Authorization', `${token}`);

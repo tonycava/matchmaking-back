@@ -23,7 +23,7 @@ export const createChat = async (content: string, userId: string): Promise<Chat>
 			createdAt: true,
 			id: true,
 			userId: true,
-			user: { select: { username: true } }
+			user: { select: { username: true, role: true } }
 		},
 		data: {
 			content,
