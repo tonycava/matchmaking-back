@@ -17,7 +17,7 @@ spec:
   selector:
     matchLabels:
       app: matchmaking-back-k8s
-  replicas: 2
+  replicas: 4
   template:
     metadata:
       labels:
@@ -26,6 +26,7 @@ spec:
       containers:
         - name: matchmaking-back-k8s
           image: tonycava/matchmaking-back-k8s
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: matchmaking-back-config
