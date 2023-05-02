@@ -2,7 +2,7 @@ import type { CorsOptions } from 'cors';
 
 const whitelist = [
 	'http://localhost:[0-9]*',
-	'https://aml.tonycava.dev',
+	'https://alm.tonycava.dev',
 	'http://matchmaking-front.info'
 ];
 
