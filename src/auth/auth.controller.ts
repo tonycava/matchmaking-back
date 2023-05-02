@@ -9,8 +9,11 @@ import prisma from '../lib/db';
 
 export const register = async (
 	req: AMLRequest<AuthDTO>,
-	res: AMLResponse
-): Promise<Response<AMLResult>> => {
+	res: AMLResponse,
+	next: NextFunction
+): Promise<Response<AMLResult> | void> => {
+	if (req.body.username.includes(' ') || req.body.password.includes(' '))
+		return next(new AMLResult('Space is not authorized in username and password field', 400));
 	try {
 		const { username, id, createdAt } = await createUser(req.body);
 		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
