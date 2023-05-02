@@ -48,13 +48,11 @@ model Chat {
 }
 
 model Follow {
-  id         String @default(uuid())
+  id         String @id @default(uuid())
   follower   User   @relation("follower", fields: [followerId], references: [id])
   followerId String
   followed   User   @relation("followed", fields: [followedId], references: [id])
   followedId String
-
-  @@id([followedId, followerId])
 }
 
 model Application {

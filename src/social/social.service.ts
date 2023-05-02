@@ -10,13 +10,11 @@ export const startFollowSomeone = (idToFollow: string, userId: string): Promise<
 	});
 };
 
-export const unFollowSomeone = (idToUnfollow: string, userId: string): Promise<Follow> => {
-	return prisma.follow.delete({
+export const unFollowSomeone = (idToUnfollow: string, userId: string): any => {
+	return prisma.follow.deleteMany({
 		where: {
-			followedId_followerId: {
-				followerId: idToUnfollow,
-				followedId: userId
-			}
+			followerId: idToUnfollow,
+			followedId: userId
 		}
 	});
 };

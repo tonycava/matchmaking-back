@@ -10,12 +10,10 @@ type UserDTO = {
 };
 
 export const isAccountFollowingMe = (myId: string, otherId: string): Promise<Follow> => {
-	return prisma.follow.findUnique({
+	return prisma.follow.findFirst({
 		where: {
-			followedId_followerId: {
-				followerId: otherId,
-				followedId: myId
-			}
+			followerId: otherId,
+			followedId: myId
 		}
 	});
 };
@@ -110,11 +108,7 @@ export const changeStatus = (userId: string, status: boolean): Promise<User> => 
 
 export const changeRole = (userId: string, role: Role): Promise<User> => {
 	return prisma.user.update({
-		where: {
-			id: userId
-		},
-		data: {
-			role
-		}
+		where: { id: userId },
+		data: { role }
 	});
 };
