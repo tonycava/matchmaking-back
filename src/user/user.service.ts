@@ -80,6 +80,7 @@ export const getUserInformationById = (
 				}
 			},
 			chats: {
+				orderBy: { createdAt: 'desc' },
 				select: {
 					userId: true,
 					id: true,

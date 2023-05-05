@@ -13,7 +13,7 @@ export const register = async (
 	next: NextFunction
 ): Promise<Response<AMLResult> | void> => {
 	if (req.body.username.includes(' ') || req.body.password.includes(' '))
-		return next(new AMLResult('Space is not authorized in username and password field', 400));
+		return next(new AMLResult('Spaces are not authorized in this field', 400));
 	try {
 		const { username, id, createdAt } = await createUser(req.body);
 		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
@@ -30,6 +30,8 @@ const login = async (
 	res: AMLResponse,
 	next: NextFunction
 ): Promise<Response<AMLResult> | void> => {
+	if (req.body.username.includes(' ') || req.body.password.includes(' '))
+		return next(new AMLResult('Spaces are not authorized in this field', 400));
 	try {
 		const user = await getUserByUsername(req.body.username);
 		if (!user) {

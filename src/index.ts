@@ -10,6 +10,7 @@ import socialRouter from './social/social.router';
 import chatRouter from './chat/chat.router';
 import leaderboardRouter from './leaderboard/leaderboard.router';
 import userRouter from './user/user.router';
+import directRouter from './direct/direct.router';
 
 import { errorHandlerMiddleware } from './common/error.middleware';
 import { CORS_CONFIG } from './lib/config';
@@ -30,6 +31,7 @@ app.use('/chat', chatRouter);
 app.use('/leaderboard', leaderboardRouter);
 app.use('/user', userRouter);
 app.use('/social', socialRouter);
+app.use('/direct', directRouter);
 
 app.get('/', (req: Request, res: Response) => res.send('Hello World !'));
 

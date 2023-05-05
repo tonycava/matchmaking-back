@@ -26,8 +26,10 @@ model User {
   followers      Follow[] @relation("follower")
   followed       Follow[] @relation("followed")
 
-  toFollow  Application[] @relation("toFollow")
-  whoFollow Application[] @relation("whoFollow")
+  toFollow         Application[] @relation("toFollow")
+  whoFollow        Application[] @relation("whoFollow")
+  personWhoSend    Direct[]      @relation("personWhoSend")
+  personWhoRecived Direct[]      @relation("personWhoRecived")
 }
 
 model Game {
@@ -62,6 +64,16 @@ model Application {
   userIdToFollow  String
   userWhoFollow   User     @relation("whoFollow", fields: [userIdWhoFollow], references: [id])
   userIdWhoFollow String
+}
+
+model Direct {
+  id                 String   @id @default(uuid())
+  createdAt          DateTime @default(now())
+  personWhoSend      User     @relation("personWhoSend", fields: [personWhoSendId], references: [id])
+  personWhoSendId    String
+  personWhoRecived   User     @relation("personWhoRecived", fields: [personWhoRecivedId], references: [id])
+  personWhoRecivedId String
+  content            String
 }
 
 enum Role {
