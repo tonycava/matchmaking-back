@@ -9,6 +9,12 @@ type UserDTO = {
 	profilePicture: string | null;
 };
 
+export const isAccountAlreadyExist = (userId: string): Promise<User | null> => {
+	return prisma.user.findUnique({
+		where: { id: userId }
+	});
+};
+
 export const isAccountFollowingMe = (myId: string, otherId: string): Promise<Follow> => {
 	return prisma.follow.findFirst({
 		where: {

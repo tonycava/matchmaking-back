@@ -5,6 +5,7 @@ import {
 	changeRole,
 	changeStatus,
 	getUserInformationById,
+	isAccountAlreadyExist,
 	isAccountFollowingMe,
 	isAccountInApplication
 } from './user.service';
@@ -41,6 +42,10 @@ const getInformations = async (
 	const { userid = '' } = req.headers as { userid: string };
 	if (!userid) return next(new AMLResult('Missing userId', 400));
 
+	const user = await isAccountAlreadyExist(userid);
+	if (!user) {
+		return next(new AMLResult('Account does not exist', 303));
+	}
 	const {
 		profilePicture,
 		id,
