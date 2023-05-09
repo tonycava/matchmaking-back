@@ -3,7 +3,7 @@ import { dtoValidation } from '../common/middleware';
 import { checkIfUsernameIsAvailable } from './auth.middleware';
 import { authDTO } from '../lib/dto';
 import AuthController from './auth.controller';
-import process from "process";
+import process from 'process';
 
 const router = express.Router();
 
