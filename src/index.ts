@@ -14,7 +14,7 @@ import directRouter from './direct/direct.router';
 
 import { errorHandlerMiddleware } from './common/error.middleware';
 import { CORS_CONFIG } from './lib/config';
-import { AMLResult } from './common/interfaces';
+import { ALMResult } from './common/interfaces';
 
 dotenv.config();
 
@@ -35,7 +35,7 @@ app.use('/user', userRouter);
 app.use('/social', socialRouter);
 app.use('/direct', directRouter);
 
-app.get('/', (req: Request, res: Response) => res.send(new AMLResult('Hello World', 200)));
+app.get('/', (req: Request, res: Response) => res.send(new ALMResult('Hello World', 200)));
 
 app.use(errorHandlerMiddleware);
 

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { AMLResult } from './interfaces';
+import { ALMResult } from './interfaces';
 
 export const errorHandlerMiddleware = (
-	error: AMLResult,
+	error: ALMResult,
 	req: Request,
 	res: Response,
 	next: NextFunction

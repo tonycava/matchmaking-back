@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
+import { ALMRequest, ALMResponse, ALMResult } from '../common/interfaces';
 import {
 	changeProfilePicture,
 	changeRole,
@@ -13,8 +13,8 @@ import { LocalsDTO, UpdateStatusDTO, UploadProfilePictureDTO } from '../lib/dto'
 import { Chat } from 'matchmaking-shared';
 
 const getInformations = async (
-	req: AMLRequest<never>,
-	res: AMLResponse<
+	req: ALMRequest<never>,
+	res: ALMResponse<
 		{
 			user: {
 				profilePicture: string;
@@ -28,7 +28,7 @@ const getInformations = async (
 	>,
 	next: NextFunction
 ): Promise<void | Response<
-	AMLResult<{
+	ALMResult<{
 		user: {
 			profilePicture: string;
 			id: string;
@@ -40,11 +40,11 @@ const getInformations = async (
 	LocalsDTO
 >> => {
 	const { userid = '' } = req.headers as { userid: string };
-	if (!userid) return next(new AMLResult('Missing userId', 400));
+	if (!userid) return next(new ALMResult('Missing userId', 400));
 
 	const user = await isAccountAlreadyExist(userid);
 	if (!user) {
-		return next(new AMLResult('Account does not exist', 303));
+		return next(new ALMResult('Account does not exist', 303));
 	}
 	const {
 		profilePicture,
@@ -78,7 +78,7 @@ const getInformations = async (
 		}));
 
 	return res.json(
-		new AMLResult('User information retrieved successfully', 200, {
+		new ALMResult('User information retrieved successfully', 200, {
 			user: {
 				id,
 				role,
@@ -103,34 +103,34 @@ const getInformations = async (
 };
 
 const uploadProfilePicture = async (
-	req: AMLRequest<UploadProfilePictureDTO>,
-	res: AMLResponse<{ profilePicture: string }, LocalsDTO>
-): Promise<Response<AMLResult<{ profilePicture: string }>, LocalsDTO>> => {
+	req: ALMRequest<UploadProfilePictureDTO>,
+	res: ALMResponse<{ profilePicture: string }, LocalsDTO>
+): Promise<Response<ALMResult<{ profilePicture: string }>, LocalsDTO>> => {
 	const { profilePicture } = await changeProfilePicture(
 		res.locals.user.id,
 		req.body.profilePicture
 	);
 	return res.json(
-		new AMLResult('Profile picture updated successfully', 200, {
+		new ALMResult('Profile picture updated successfully', 200, {
 			profilePicture
 		})
 	);
 };
 
 const updateStatus = async (
-	req: AMLRequest<UpdateStatusDTO>,
-	res: AMLResponse<{ status: boolean }, LocalsDTO>
-): Promise<Response<AMLResult<{ status: boolean }>>> => {
+	req: ALMRequest<UpdateStatusDTO>,
+	res: ALMResponse<{ status: boolean }, LocalsDTO>
+): Promise<Response<ALMResult<{ status: boolean }>>> => {
 	const { private: status } = await changeStatus(res.locals.user.id, req.body.status);
-	return res.json(new AMLResult('Status updated successfully', 200, { status }));
+	return res.json(new ALMResult('Status updated successfully', 200, { status }));
 };
 
 const promote = async (
-	req: AMLRequest<UpdateStatusDTO>,
-	res: AMLResponse<null, LocalsDTO>
-): Promise<Response<AMLResult<null>>> => {
+	req: ALMRequest<UpdateStatusDTO>,
+	res: ALMResponse<null, LocalsDTO>
+): Promise<Response<ALMResult<null>>> => {
 	await changeRole(res.locals.user.id, 'ADMIN');
-	return res.json(new AMLResult('Role updated successfully', 200));
+	return res.json(new ALMResult('Role updated successfully', 200));
 };
 
 export default {

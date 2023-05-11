@@ -1,14 +1,14 @@
-import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
+import { ALMRequest, ALMResponse, ALMResult } from '../common/interfaces';
 import { getMessages } from './chat.service';
 import { Response } from 'express';
 import { Range } from 'matchmaking-shared';
 
 const getChat = async (
-	req: AMLRequest<never, Range>,
-	res: AMLResponse
-): Promise<Response<AMLResult>> => {
+	req: ALMRequest<never, Range>,
+	res: ALMResponse
+): Promise<Response<ALMResult>> => {
 	const messages = await getMessages(req.query);
-	return res.send(new AMLResult('Chat.ts fetched', 200, { messages }));
+	return res.send(new ALMResult('Chat.ts fetched', 200, { messages }));
 };
 
 export default { getChat };

@@ -1,4 +1,4 @@
-import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
+import { ALMRequest, ALMResponse, ALMResult } from '../common/interfaces';
 import {
 	AcceptApplicationDTO,
 	AddApplicationDTO,
@@ -21,39 +21,39 @@ import { Response } from 'express';
 import { io } from '../index';
 
 const addFollow = async (
-	req: AMLRequest<AddFollowDTO>,
-	res: AMLResponse<{ follow: Follow }, LocalsDTO>
-): Promise<Response<AMLResult<{ follow: Follow }>>> => {
+	req: ALMRequest<AddFollowDTO>,
+	res: ALMResponse<{ follow: Follow }, LocalsDTO>
+): Promise<Response<ALMResult<{ follow: Follow }>>> => {
 	const { userIdToFollow } = req.body;
 	const { id } = res.locals.user;
 
-	if (userIdToFollow === id) return res.send(new AMLResult('You cannot follow yourself', 400));
+	if (userIdToFollow === id) return res.send(new ALMResult('You cannot follow yourself', 400));
 	const follow = await startFollowSomeone(userIdToFollow, id);
 
-	return res.send(new AMLResult('OK', 200, { follow }));
+	return res.send(new ALMResult('OK', 200, { follow }));
 };
 
 const removeFollow = async (
-	req: AMLRequest<UnFollowDTO>,
-	res: AMLResponse<{ unfollow: Follow }, LocalsDTO>
-): Promise<Response<AMLResult<{ unfollow: Follow }>>> => {
+	req: ALMRequest<UnFollowDTO>,
+	res: ALMResponse<{ unfollow: Follow }, LocalsDTO>
+): Promise<Response<ALMResult<{ unfollow: Follow }>>> => {
 	const { userIdToUnFollow } = req.body;
 	const { id } = res.locals.user;
-	if (userIdToUnFollow === id) return res.send(new AMLResult('You cannot unfollow yourself', 400));
+	if (userIdToUnFollow === id) return res.send(new ALMResult('You cannot unfollow yourself', 400));
 
 	const unfollow = await unFollowSomeone(userIdToUnFollow, id);
 	io.emit(`user/remove-follow/${userIdToUnFollow}`, res.locals.user.id);
-	return res.send(new AMLResult('OK', 200, { unfollow }));
+	return res.send(new ALMResult('OK', 200, { unfollow }));
 };
 
 const addApplication = async (
-	req: AMLRequest<AddApplicationDTO>,
-	res: AMLResponse<{ application: Application }, LocalsDTO>
-): Promise<Response<AMLResult<{ application: Application }>>> => {
+	req: ALMRequest<AddApplicationDTO>,
+	res: ALMResponse<{ application: Application }, LocalsDTO>
+): Promise<Response<ALMResult<{ application: Application }>>> => {
 	const { userIdToApply } = req.body;
 	const { id: userId } = res.locals.user;
 
-	if (userIdToApply === userId) return res.send(new AMLResult('Cannot add yourself', 200));
+	if (userIdToApply === userId) return res.send(new ALMResult('Cannot add yourself', 200));
 
 	const application = await addNewApplication(userIdToApply, userId);
 	io.emit(`user/demand/${userIdToApply}`, {
@@ -65,40 +65,40 @@ const addApplication = async (
 			username: application.userToFollow.username
 		}
 	});
-	return res.send(new AMLResult('OK', 200, { application }));
+	return res.send(new ALMResult('OK', 200, { application }));
 };
 
 const removeApplication = async (
-	req: AMLRequest<RemoveApplicationDTO>,
-	res: AMLResponse<{ application: Application }, LocalsDTO>
-): Promise<Response<AMLResult<{ application: Application }>>> => {
+	req: ALMRequest<RemoveApplicationDTO>,
+	res: ALMResponse<{ application: Application }, LocalsDTO>
+): Promise<Response<ALMResult<{ application: Application }>>> => {
 	const { applicationIdToUnApply } = req.body;
 	const application = await removeApplicationById(applicationIdToUnApply);
 	io.emit(`user/demand/reject/${application.userIdWhoFollow}/${application.userIdToFollow}`);
-	return res.send(new AMLResult('OK', 200, { application }));
+	return res.send(new ALMResult('OK', 200, { application }));
 };
 
 const acceptApplication = async (
-	req: AMLRequest<AcceptApplicationDTO>,
-	res: AMLResponse<{ application: Application; follow: Follow }, LocalsDTO>
-): Promise<Response<AMLResult<{ application: Application; follow: Follow }>>> => {
+	req: ALMRequest<AcceptApplicationDTO>,
+	res: ALMResponse<{ application: Application; follow: Follow }, LocalsDTO>
+): Promise<Response<ALMResult<{ application: Application; follow: Follow }>>> => {
 	const { applicationIdToApply, userIdToFollow } = req.body;
 	const application = await removeApplicationById(applicationIdToApply);
 	const follow = await startFollowSomeone(res.locals.user.id, userIdToFollow);
 	io.emit(`user/new-follow/${follow.followerId}`, follow);
 	io.emit(`user/demand/accept/${follow.followerId}/${follow.followedId}`);
-	return res.send(new AMLResult('OK', 200, { application, follow }));
+	return res.send(new ALMResult('OK', 200, { application, follow }));
 };
 
 const removeWaitingApplication = async (
-	req: AMLRequest<RemoveWaitingApplicationDTO>,
-	res: AMLResponse<{ deletedApplication: Application }, LocalsDTO>
-): Promise<Response<AMLResult<{ deletedApplication: Application }>>> => {
+	req: ALMRequest<RemoveWaitingApplicationDTO>,
+	res: ALMResponse<{ deletedApplication: Application }, LocalsDTO>
+): Promise<Response<ALMResult<{ deletedApplication: Application }>>> => {
 	const { userIdToUnWait } = req.body;
 	const application = await getApplicationById(res.locals.user.id, userIdToUnWait);
 	const deletedApplication = await removeWaitingApplicationById(application.id);
 	io.emit(`user/demand/remove/${userIdToUnWait}`, deletedApplication.id);
-	return res.send(new AMLResult('OK', 200, { deletedApplication }));
+	return res.send(new ALMResult('OK', 200, { deletedApplication }));
 };
 
 export default {
