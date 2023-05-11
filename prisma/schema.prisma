@@ -12,19 +12,21 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(uuid())
-  username       String   @unique
+  id             String  @id @default(uuid())
+  username       String  @unique
   profilePicture String?
   hashedPassword String
-  role           Role     @default(USER)
-  private        Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  winnerGames    Game[]   @relation("winner")
-  loserGames     Game[]   @relation("loser")
-  chats          Chat[]
-  followers      Follow[] @relation("follower")
-  followed       Follow[] @relation("followed")
+  secret         String  @default("")
+
+  role        Role     @default(USER)
+  private     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  winnerGames Game[]   @relation("winner")
+  loserGames  Game[]   @relation("loser")
+  chats       Chat[]
+  followers   Follow[] @relation("follower")
+  followed    Follow[] @relation("followed")
 
   toFollow         Application[] @relation("toFollow")
   whoFollow        Application[] @relation("whoFollow")
@@ -45,24 +47,24 @@ model Chat {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   content   String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
 }
 
 model Follow {
   id         String @id @default(uuid())
-  follower   User   @relation("follower", fields: [followerId], references: [id])
+  follower   User   @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
   followerId String
-  followed   User   @relation("followed", fields: [followedId], references: [id])
+  followed   User   @relation("followed", fields: [followedId], references: [id], onDelete: Cascade)
   followedId String
 }
 
 model Application {
   id              String   @id @default(uuid())
   createdAt       DateTime @default(now())
-  userToFollow    User     @relation("toFollow", fields: [userIdToFollow], references: [id])
+  userToFollow    User     @relation("toFollow", fields: [userIdToFollow], references: [id], onDelete: Cascade)
   userIdToFollow  String
-  userWhoFollow   User     @relation("whoFollow", fields: [userIdWhoFollow], references: [id])
+  userWhoFollow   User     @relation("whoFollow", fields: [userIdWhoFollow], references: [id], onDelete: Cascade)
   userIdWhoFollow String
 }
 

@@ -29,10 +29,10 @@ export const formatZodParseResponseOneLine = <Input = any, Output = any>(
 	return formatZodParseResponse(error).join(separator);
 };
 
-type JwtPayLoad = { id: string; username: string; role: Role; createdAt: Date };
+type JwtPayLoad = { id: string; username: string; role: Role; createdAt: Date; secret: string };
 
-export const signToken = ({ id, username, createdAt, role }: JwtPayLoad): string => {
-	return jwt.sign({ id, username, createdAt, role }, process.env.JWT_SECRET ?? '', {
+export const signToken = (payload: JwtPayLoad): string => {
+	return jwt.sign(payload, process.env.JWT_SECRET ?? '', {
 		expiresIn: '7d'
 	});
 };

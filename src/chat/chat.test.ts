@@ -35,7 +35,11 @@ describe('Chat - Get', () => {
 		const userData = await prisma.user.findFirst()!;
 		if (!userData) throw new Error('User not found');
 		const token = signToken({
-			id: userData?.id, username: userData.username, createdAt: userData.createdAt, role: userData.role
+			id: userData?.id,
+			username: userData.username,
+			createdAt: userData.createdAt,
+			role: userData.role,
+			secret: userData.secret
 		});
 		await createChat('Hello World', userData.id);
 		// When

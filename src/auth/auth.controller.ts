@@ -1,11 +1,11 @@
 import { AMLRequest, AMLResponse, AMLResult } from '../common/interfaces';
 import { AuthDTO } from '../lib/dto';
 import { NextFunction, Response } from 'express';
-import process from 'process';
 import { createUser, getUserByUsername } from './auth.service';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import prisma from '../lib/db';
+import { authenticator } from 'otplib';
+import { signToken } from '../common/utils';
 
 export const register = async (
 	req: AMLRequest<AuthDTO>,
@@ -15,11 +15,10 @@ export const register = async (
 	if (req.body.username.includes(' ') || req.body.password.includes(' '))
 		return next(new AMLResult('Spaces are not authorized in this field', 400));
 	try {
-		const { username, id, createdAt } = await createUser(req.body);
-		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
-			expiresIn: '7d'
-		});
-		return res.status(201).json(new AMLResult('User created', 201, { token }));
+		const { username, id, createdAt, secret, role } = await createUser(req.body);
+		const token = signToken({ id, username, createdAt, role, secret });
+		const authKey = authenticator.keyuri(username, 'ALM-Matcher', secret);
+		return res.status(201).json(new AMLResult('User created', 201, { token, authKey }));
 	} catch (error) {
 		return res.status(201).json(new AMLResult('Something went wrong', 400));
 	}
@@ -43,13 +42,12 @@ const login = async (
 			return next(new AMLResult('Invalid credentials', 401));
 		}
 
-		const { id, username, createdAt } = user;
-		const token = jwt.sign({ id, username, createdAt }, process.env.JWT_SECRET ?? '', {
-			expiresIn: '7d'
-		});
+		const { id, username, createdAt, secret, role } = user;
+		const token = signToken({ id, username, createdAt, role, secret });
+		const authKey = authenticator.keyuri(username, 'ALM-Matcher', secret);
 
 		if (!token) return next(new AMLResult('Unauthorized', 401));
-		return res.json(new AMLResult('User logged in', 200, { token }));
+		return res.json(new AMLResult('User logged in', 200, { token, authKey }));
 	} catch (error: any) {
 		return next(new AMLResult(error.message ?? 'Something went wrong', 400));
 	}
