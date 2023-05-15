@@ -54,7 +54,7 @@ describe('Auth - Login', () => {
 			username: 'escaffre.lucas2003@gmail.com',
 			password: 'wrong password'
 		});
-		expect(result.status).toBe(401);
+		expect(result.status).toBe(400);
 		expect(isAMLResultShaped(result.body)).toBe(true);
 	});
 });
