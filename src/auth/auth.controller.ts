@@ -73,6 +73,16 @@ const verifyOTP = async (
 	);
 };
 
+const getQRCode = async (
+	req: ALMRequest<never>,
+	res: ALMResponse
+): Promise<Response<ALMResult> | void> => {
+	const { secret, username } = await getUserByUsername(res.locals.user.username);
+	const authKey = authenticator.keyuri(username, 'ALM-Matcher', secret);
+	const qrCodeURL = await QRCode.toDataURL(authKey);
+	return res.status(200).json(new ALMResult('Valid OTP', 201, { qrCodeURL }));
+};
+
 const truncate = async (
 	req: ALMRequest<AuthDTO>,
 	res: ALMResponse
@@ -91,5 +101,6 @@ export default {
 	register,
 	login,
 	verifyOTP,
+	getQRCode,
 	truncate
 };

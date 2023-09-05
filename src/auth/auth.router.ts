@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { checkAuth, dtoValidation } from '../common/middleware';
 import { checkIfUsernameIsAvailable } from './auth.middleware';
 import { authDTO, verifyOTPDTO } from '../lib/dto';
@@ -34,6 +34,8 @@ router.post(
 	checkAuth,
 	AuthController.verifyOTP
 );
+
+router.get('/generate-qr-code', checkAuth, AuthController.getQRCode);
 
 if (process.env.ENVIRONMENT === 'test') {
 	router.delete('/truncate', AuthController.truncate);
