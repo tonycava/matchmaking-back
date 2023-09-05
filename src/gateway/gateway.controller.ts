@@ -19,7 +19,6 @@ setInterval(async () => {
 					id: gameId,
 					winnerId: winningPlayer.winnerId,
 					loserId: winningPlayer.loserId,
-					result: winningPlayer.winnerId,
 					createdAt: new Date()
 				};
 				io.emit(`user/${winningPlayer.winnerId}`, toEmit);
@@ -35,11 +34,24 @@ setInterval(async () => {
 	}
 }, 1000);
 
-io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
-	console.log('a user connected');
+setInterval(() => {
+	for (const [userId, waiter] of waiters) {
+		const differenceInSeconds =
+			(new Date().getTime() - new Date(waiter.lastTimeAlive).getTime()) / 1000;
+		if (differenceInSeconds > 10.9) {
+			waiters.delete(userId);
+		}
+	}
+}, 1000 * 10); // 10 seconds
 
-	socket.on(WEB_SOCKET_EVENT.LEAVE_WAITING, (data: Waiter) => {
-		waiters.delete(data.userId);
+io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
+	socket.on('alive', ({ userId, lastTimeAlive }: { userId: string; lastTimeAlive: string }) => {
+		const user = waiters.get(userId);
+		waiters.set(userId, {
+			userId: user.userId,
+			joinAt: user.joinAt,
+			lastTimeAlive: new Date(lastTimeAlive)
+		});
 	});
 
 	socket.on(WEB_SOCKET_EVENT.JOIN_GAME, (gameId: string) => {
@@ -114,6 +126,10 @@ io.on(WEB_SOCKET_EVENT.CONNECT, (socket) => {
 		}
 
 		if (waiters.has(data.userId)) return;
-		waiters.set(data.userId, data);
+		waiters.set(data.userId, {
+			userId: data.userId,
+			lastTimeAlive: data.joinAt,
+			joinAt: data.joinAt
+		});
 	});
 });

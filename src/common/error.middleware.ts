@@ -8,6 +8,6 @@ export const errorHandlerMiddleware = (
 	next: NextFunction
 ): Response => {
 	return res
-		.status(error.code)
+		.status(error.code ?? 400)
 		.json({ message: error.message, code: error.code, data: error.data });
 };

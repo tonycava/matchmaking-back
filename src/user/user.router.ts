@@ -3,16 +3,14 @@ import { checkAuth, dtoValidation } from '../common/middleware';
 import UserController from './user.controller';
 import { promoteDTO, updateStatusDTO, uploadProfilePictureDTO } from '../lib/dto';
 import { isTokenSignWithAdmin } from './user.middleware';
-import rateLimit from 'express-rate-limit';
+import { rateLimit } from 'express-rate-limit';
 import { ALMResult } from '../common/interfaces';
 
 const router = express.Router();
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+	max: 1, // Limit each IP to 1 request per `window` (here, per 15 minutes)
 	message: new ALMResult('Please wait before upload a new profile image', 429)
 });
 

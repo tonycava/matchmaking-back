@@ -25,7 +25,7 @@ export const io = new Server(server, { cors: CORS_CONFIG });
 
 import './gateway/gateway.controller';
 
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 app.use(cors(CORS_CONFIG));
 
 app.use('/auth', authRouter);

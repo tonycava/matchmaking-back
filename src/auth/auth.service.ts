@@ -5,7 +5,7 @@ import { type User } from '@prisma/client';
 import { authenticator } from 'otplib';
 
 export const getUserByUsername = (username: string): Promise<User | null> => {
-	return prisma.user.findUnique({
+	return prisma.user.findFirst({
 		where: { username }
 	});
 };

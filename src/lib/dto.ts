@@ -52,6 +52,12 @@ export const promoteDTO = z.object({
 
 export type PromoteDTO = z.infer<typeof promoteDTO>;
 
+export const verifyOTPDTO = z.object({
+	code: z.string().min(1, { message: 'Code is required' })
+});
+
+export type VerifyOTPDTO = z.infer<typeof verifyOTPDTO>;
+
 export type RemoveWaitingApplicationDTO = z.infer<typeof removeWaitingApplication>;
 
 export type AddFollowDTO = z.infer<typeof addFollowDTO>;

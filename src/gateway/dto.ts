@@ -3,6 +3,7 @@ import { Move } from 'matchmaking-shared';
 export type Waiter = {
 	userId: string;
 	joinAt: Date;
+	lastTimeAlive: Date;
 };
 
 export type PlayDTO = {

@@ -1,10 +1,11 @@
 import { ALMRequest, ALMResponse, ALMResult } from '../common/interfaces';
-import { AuthDTO } from '../lib/dto';
+import { AuthDTO, VerifyOTPDTO } from '../lib/dto';
 import { NextFunction, Response } from 'express';
 import { createUser, getUserByUsername } from './auth.service';
 import bcrypt from 'bcrypt';
 import prisma from '../lib/db';
 import { authenticator } from 'otplib';
+import QRCode from 'qrcode';
 import { signToken } from '../common/utils';
 
 export const register = async (
@@ -16,9 +17,10 @@ export const register = async (
 		return next(new ALMResult('Spaces are not authorized in this field', 400));
 	try {
 		const { username, id, createdAt, secret, role } = await createUser(req.body);
-		const token = signToken({ id, username, createdAt, role, secret });
+		const token = signToken({ id, username, createdAt, role, optAuthenticated: false });
 		const authKey = authenticator.keyuri(username, 'ALM-Matcher', secret);
-		return res.status(201).json(new ALMResult('User created', 201, { token, authKey }));
+		const qrCodeURL = await QRCode.toDataURL(authKey);
+		return res.status(201).json(new ALMResult('User created', 201, { token, qrCodeURL }));
 	} catch (error) {
 		return res.status(201).json(new ALMResult('Something went wrong', 400));
 	}
@@ -43,14 +45,32 @@ const login = async (
 		}
 
 		const { id, username, createdAt, secret, role } = user;
-		const token = signToken({ id, username, createdAt, role, secret });
-		const authKey = authenticator.keyuri(username, 'ALM-Matcher', secret);
-
+		const token = signToken({ id, username, createdAt, role, optAuthenticated: false });
 		if (!token) return next(new ALMResult('Unauthorized', 401));
-		return res.json(new ALMResult('User logged in', 200, { token, authKey }));
+		const authKey = authenticator.keyuri(username, 'ALM-Matcher', secret);
+		const qrCodeURL = await QRCode.toDataURL(authKey);
+		return res.status(201).json(new ALMResult('User created', 201, { token, qrCodeURL }));
 	} catch (error: any) {
 		return next(new ALMResult(error.message ?? 'Something went wrong', 400));
 	}
+};
+
+const verifyOTP = async (
+	req: ALMRequest<VerifyOTPDTO>,
+	res: ALMResponse
+): Promise<Response<ALMResult> | void> => {
+	const { code } = req.body;
+	const { secret, id, username, createdAt, role } = await getUserByUsername(
+		res.locals.user.username
+	);
+	const isOTPValid = authenticator.check(code, secret);
+	if (!isOTPValid) return res.status(401).json(new ALMResult('Invalid OTP', 401));
+	const jwtToken = signToken({ id, username, createdAt, role, optAuthenticated: true });
+	return res.status(200).json(
+		new ALMResult('Valid OTP', 201, {
+			token: jwtToken
+		})
+	);
 };
 
 const truncate = async (
@@ -70,5 +90,6 @@ const truncate = async (
 export default {
 	register,
 	login,
+	verifyOTP,
 	truncate
 };

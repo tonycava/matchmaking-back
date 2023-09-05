@@ -1,5 +1,6 @@
 import { createChat } from './chat.service';
 import prisma from '../lib/db';
+// @ts-ignore
 import request from 'supertest';
 import app from '../index';
 import { signToken } from '../common/utils';
@@ -31,7 +32,6 @@ describe('Chat - Create', () => {
 
 describe('Chat - Get', () => {
 	it('should get a chat', async () => {
-		// Given
 		const userData = await prisma.user.findFirst()!;
 		if (!userData) throw new Error('User not found');
 		const token = signToken({
@@ -39,7 +39,7 @@ describe('Chat - Get', () => {
 			username: userData.username,
 			createdAt: userData.createdAt,
 			role: userData.role,
-			secret: userData.secret
+			optAuthenticated: false
 		});
 		await createChat('Hello World', userData.id);
 		// When

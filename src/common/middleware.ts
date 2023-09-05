@@ -7,9 +7,11 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 export const dtoValidation = <T>(next: NextFunction, item: T, validator: ZodSchema<T>): void => {
 	const zodResponse = validator.safeParse(item);
 	if (!zodResponse.success) {
-		return next(new ALMResult(formatZodParseResponseOneLine(zodResponse) ?? 'Bad request', 400));
+		next(new ALMResult(formatZodParseResponseOneLine(zodResponse) ?? 'Bad request', 400));
+		return;
 	}
-	return next();
+	next();
+	return;
 };
 
 export const checkToken = async (
@@ -17,7 +19,7 @@ export const checkToken = async (
 ): Promise<[boolean, null | JwtPayload]> => {
 	if (!token) return [false, null];
 	try {
-		const payload = jwt.verify(token, process.env.JWT_SECRET ?? '') as JwtPayload;
+		const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 		return [true, payload];
 	} catch (error) {
 		return [false, null];
@@ -32,7 +34,9 @@ export const checkAuth = async (
 	const [isValid, payload] = await checkToken(req.headers?.authorization);
 	if (isValid) {
 		res.locals.user = payload;
-		return next();
+		next();
+		return;
 	}
-	return res.json(new ALMResult('Unauthorized', 401));
+	res.json(new ALMResult('Unauthorized', 401));
+	return;
 };

@@ -110,11 +110,12 @@ const uploadProfilePicture = async (
 		res.locals.user.id,
 		req.body.profilePicture
 	);
-	return res.json(
+	res.json(
 		new ALMResult('Profile picture updated successfully', 200, {
 			profilePicture
 		})
 	);
+	return;
 };
 
 const updateStatus = async (
